@@ -1,14 +1,14 @@
 <template>
-  <div class="login-page flex h-screen w-full relative overflow-hidden">
-    <div class="quote   hidden md:flex w-2/3 items-center justify-center  relative">
+  <div class="login-page flex h-screen w-full relative overflow-hidden pt-4">
+    <div class="quote   hidden md:flex w-2/3 items-center justify-center  relative pt-4">
       <div
-        class="absolute inset-0 rounded-l-3xl overflow-hidden bg-cover bg-center mt-4"
+        class="absolute inset-0 rounded-l-3xl overflow-hidden bg-cover bg-center"
         :style="{ backgroundImage: 'url(/src/assets/image/office-581127_1280.jpg)' }"
       >
         <div class="absolute inset-0  bg-opacity-60"></div>
       </div>
       <div class="relative z-10 font-extrabold text-white text-center px-8">
-        <blockquote class="text-xl md:text-3xl font-extrabold italic leading-relaxed">
+        <blockquote class="text-2xl md:text-3xl font-extrabold italic leading-relaxed">
           “The future belongs to those who believe in the beauty of their dreams.”
         </blockquote>
       </div>
@@ -101,7 +101,7 @@ const handlesubmit = async () => {
 }
 
 const goToSignup = () => router.push({ name: 'signupView' })
-const goToForgotPassword = () => router.push({ name: 'forgotPasswordView' })
+const goToForgotPassword = () => router.push({ name: 'ForgetPassword' })
 </script>
 
 <style scoped>

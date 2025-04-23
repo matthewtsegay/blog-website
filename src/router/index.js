@@ -24,13 +24,13 @@ const router=createRouter({
             path:'/ProfileView',
             name:'ProfileView',
             component:()=>import('../views/auth/ProfileView.vue'),
-            //meta:{requireAuth:true}
+            meta:{requireAuth:true}
         },
         {
           path:'/createPost',
           name:'createPost',
           component:()=>import('../views/Blogpost/createPost.vue'),
-         // meta:{requireAuth:true}
+          meta:{requireAuth:true}
         },
         {
           path:'/EditPost/:id',
@@ -42,20 +42,25 @@ const router=createRouter({
           path:'/MyPosts',
           name:'MyPosts',
           component:() => import('../views/Blogpost/MyPosts.vue'),
-          //meta:{requireAuth:true}
+          meta:{requireAuth:true}
         },
         {
           path:'/postPage/:id',
           name:'postPage',
           component:() => import('../views/Blogpost/PostPage.vue'),
-          //meta:{requireAuth:true}
+          meta:{requireAuth:true}
         },
         {
           path:'/PostDashBoard',
           name:'PostDashBoard',
-          component:()=>import('../views/Blogpost/PostDashBoard.vue')
+          component:()=>import('../views/Blogpost/PostDashBoard.vue'),
+         // meta:{requireAuth:true}
         },
-       // { path:'/ForgetPassword', name:'ForgetPassword', component:()=>import('../views/auth') }
+        { path:'/ForgetPassword', 
+          name:'ForgetPassword',
+          component:()=>import('../views/auth/ForgetPassword.vue'),
+         // meta:{requireAuth:true}
+        }
     ]
 })
 export default router;

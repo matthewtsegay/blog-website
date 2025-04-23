@@ -3,13 +3,13 @@
     <div class="hidden md:flex w-2/3 items-center justify-center px-8 relative">
       <div
         class="absolute inset-0 rounded-l-3xl overflow-hidden bg-cover bg-center"
-        :style="{ backgroundImage: 'url(/src/assets/image/banner-bg.png)' }"
+        :style="{ backgroundImage: 'url(/src/assets/image/mati.jpg)' }"
       >
         <div class="absolute inset-0 bg-opacity-60"></div>
       </div>
       <div class="relative z-10 text-white text-center px-8">
         <h2 class="text-3xl font-extrabold mb-4">Welcome to Our Blog Community</h2>
-        <p class="text-yellow-300 text-2xl italic font-semibold font-serif">
+        <p class="text-gray-400 text-2xl italic font-semibold font-serif">
           “The power of a blog is not in its words, but in the connection it creates.”
         </p>
       </div>

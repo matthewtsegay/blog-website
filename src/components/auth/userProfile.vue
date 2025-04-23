@@ -1,5 +1,5 @@
 <template>
-   <div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+   <div class="max-w-xl mt-6 mx-auto p-6 bg-white rounded-lg shadow-md">
      <div class="mb-1">
        <h1 class="text-2xl font-bold text-white py-3 bg-blue-600 rounded-t-md text-center">
          Welcome, {{ firstName }}

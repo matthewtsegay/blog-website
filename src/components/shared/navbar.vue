@@ -1,10 +1,12 @@
 <template>
-  <nav :class="[!authStore.isAuthenticated ? 'bg-blue-100' : 'bg-transparent', 'shadow-md px-6 py-6 flex items-center justify-between relative w-full']">
+  <nav :class="[!authStore.isAuthenticated ? 'bg-black' : 'bg-transparent', 'shadow-md px-6 py-6 flex items-center justify-between relative w-full z-50']">
     <div class="flex items-center">
-      <router-link to="/" class="text-2xl font-bold text-blue-600">
-       {{ badge }}
+      <router-link to="/" class="text-2xl font-bold text-gray-100">
+        {{ badge }}
       </router-link>
     </div>
+
+    <!-- Blog Dropdown (centered) -->
     <div v-if="authStore.isAuthenticated" class="absolute left-1/2 transform -translate-x-1/2">
       <div class="relative" ref="dropdownRef">
         <button
@@ -15,11 +17,11 @@
         </button>
         <div
           v-if="dropdownOpen"
-          class="absolute left-1/2 -translate-x-1/2 mt-2 w-44 bg-white border border-blue-200 shadow-md rounded-md py-2 z-10"
+          class="absolute left-1/2 -translate-x-1/2 mt-2 w-44 bg-white border border-blue-200 shadow-md rounded-md py-2 z-[999]"
         >
           <router-link
             to="/createPost"
-            class="block px-4 py-2 text-sm  text-gray-700 hover:bg-blue-100"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
             @click="closeDropdown"
           >
             Create Blog
@@ -43,8 +45,11 @@
         </div>
       </div>
     </div>
+
+    <!-- Right-side section -->
     <div class="flex items-center space-x-4">
       <template v-if="!authStore.isAuthenticated">
+        <!-- User Dropdown -->
         <div class="relative" ref="userDropdownRef">
           <button
             @click="toggleUserDropdown"
@@ -54,7 +59,7 @@
           </button>
           <div
             v-if="userDropdown"
-            class="absolute right-0 mt-2 w-40 bg-white border border-blue-200 shadow-md rounded-md py-2 z-10"
+            class="absolute right-0 mt-2 w-40 bg-white border border-blue-200 shadow-md rounded-md py-2 z-[999]"
           >
             <router-link
               to="/loginView"
@@ -76,6 +81,7 @@
       </template>
 
       <template v-else>
+        <!-- Profile Dropdown -->
         <div class="relative text-center" ref="profileDropdownRef">
           <img
             @click="toggleProfileDropdown"
@@ -88,7 +94,7 @@
           </p>
           <div
             v-if="profileDropdown"
-            class="absolute right-0 mt-2 w-44 bg-white border border-blue-200 shadow-md rounded-md py-2 z-10"
+            class="absolute right-0 mt-2 w-44 bg-white border border-blue-200 shadow-md rounded-md py-2 z-[999]"
           >
             <router-link
               to="/profileView"
@@ -110,6 +116,7 @@
     </div>
   </nav>
 </template>
+
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useAuthStore } from '../../store/auth'
@@ -130,34 +137,27 @@ const userDropdownRef = ref(null)
 function toggleDropdown() {
   dropdownOpen.value = !dropdownOpen.value
 }
-
 function closeDropdown() {
   dropdownOpen.value = false
 }
-
 function toggleProfileDropdown() {
   profileDropdown.value = !profileDropdown.value
 }
-
 function closeProfileDropdown() {
   profileDropdown.value = false
 }
-
 function toggleUserDropdown() {
   userDropdown.value = !userDropdown.value
 }
-
 function closeUserDropdown() {
   userDropdown.value = false
 }
-
 function logout() {
   authStore.logout()
   closeProfileDropdown()
   closeDropdown()
   router.push('/loginView')
 }
-
 function handleClickOutside(event) {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     dropdownOpen.value = false
@@ -173,7 +173,6 @@ function handleClickOutside(event) {
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 })
-
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })

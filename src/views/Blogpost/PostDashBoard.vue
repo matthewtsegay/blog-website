@@ -1,29 +1,29 @@
 <template>
   <navbar />
-  <div class="p-4 sm:p-6">
+  <div class="p-4 mb-100">
     <div class="bg-gray-100 px-4 py-2 sm:px-6 rounded-xl mb-6 shadow">
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
         <h1 class="text-2xl font-semibold text-gray-800">Blog Posts</h1>
-    <div class="relative flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-1/2">
-       <label for="search" class="block text-md font-semibold text-gray-700">
-         Search
-      </label>
-      <div class="relative w-full">
-       <span
-           class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 transition-opacity duration-200"
-           :class="{ 'opacity-0': searchTerm }"
-       >
-          🔍
-     </span>
-     <input
-          id="search"
-          v-model="searchTerm"
-          type="text"
-          placeholder="Enter keyword..."
-         class="w-full pl-10 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-400"
-     />
-    </div>
-    </div>
+        <div class="relative flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-1/2">
+          <label for="search" class="block text-md font-semibold text-gray-700">
+            Search
+          </label>
+          <div class="relative w-full">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 transition-opacity duration-200"
+              :class="{ 'opacity-0': searchTerm }"
+            >
+              🔍
+            </span>
+            <input
+              id="search"
+              v-model="searchTerm"
+              type="text"
+              placeholder="Enter keyword..."
+              class="w-full pl-10 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-400"
+            />
+          </div>
+        </div>
         <button
           @click="createPost"
           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full md:w-auto"
@@ -49,11 +49,11 @@
             :key="post.id"
             class="border-b hover:bg-gray-50"
           >
-            <td class="py-3 px-4">{{ index + 1 }}</td>
-            <td class="py-3 px-4 font-medium">{{ post.title }}</td>
-            <td class="py-3 px-4 text-gray-600 truncate max-w-xs">{{ post.content }}</td>
-            <td class="py-3 px-4 text-gray-500">{{ formatDate(post.created_at) }}</td>
-            <td class="py-3 px-4 space-x-2">
+            <td class="py-3 px-4 bg-gray-400 text-white">{{ index + 1 }}</td>
+            <td class="py-3 px-4 bg-gray-200 font-medium">{{ post.title }}</td>
+            <td class="py-3 px-4 bg-gray-400 text-white truncate max-w-xs">{{ post.content }}</td>
+            <td class="py-3 px-4 bg-gray-200 text-gray-800">{{ formatDate(post.created_at) }}</td>
+            <td class="py-3 px-4 bg-gray-400 space-x-2">
               <button
                 @click="editPost(post.id)"
                 class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
@@ -72,13 +72,15 @@
       </table>
     </div>
   </div>
+  <footer1 />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import navbar from '../../components/shared/navbar.vue'
-import { getAllPosts, deletePost ,updatePost} from '../../api/postsApi.js'
+import footer1 from '../../components/shared/footer1.vue'
+import { getAllPosts, deletePost } from '../../api/postsApi.js'
 
 const posts = ref([])
 const searchTerm = ref('')

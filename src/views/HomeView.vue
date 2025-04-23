@@ -1,12 +1,12 @@
 <template>
   <navbar />
   <div class="min-h-screen bg-white">
- <section class="banner bg-[url('../assets/image/blog-372771_1280.jpg')] bg-cover bg-center bg-no-repeat round-md w-full h-screen flex items-center">
+ <section class="banner rounded-lg px-10 bg-cover bg-center bg-no-repeat round-md w-full h-screen flex items-center">
   <div class="container mx-auto px-6">
     <div class="max-w-xl">
       <h1 class="text-5xl font-extrabold text-gray-400 mb-4">Blog Content</h1>
       <h2 class="text-4xl font-bold text-gray-300 mb-4">{{message}}</h2>
-      <p class="text-gray-200 text-3xl font-extrabold italic mb-6">
+      <p class="text-gray-400  text-3xl font-extrabold italic mb-6">
         “A good cup of coffee is more than just a drink—it’s a pause, a thought, a moment of clarity in the chaos of the day. Let your ideas brew, and your mind awaken.”
       </p>
     </div>
@@ -32,7 +32,7 @@
       </router-link>
     </div>
     <div class="py-4">
-      <img src="../assets/image/blog-793047_1280.jpg" alt="About" class="rounded-lg shadow-md" />
+      <img src="../assets/image/page2.jpg" alt="About" class="rounded-lg shadow-md" />
     </div>
   </div>
 </section>
@@ -152,6 +152,6 @@ function loadMore() {
 </script>
 <style scoped>
 .banner{
-  background-image: url('../assets//image/blog-793047_1280.jpg');
+  background-image: url('../assets//image/table-4074014_1280.jpg');
 }
 </style>

@@ -10,15 +10,15 @@ const authStore = useAuthStore()
 const router = useRouter()
 
 onMounted(() => {
-  if (!authStore.isAuthenticated) {
+  if (authStore.isAuthenticated) {
     router.push({ name: 'ProfileView' })
   }
 })
 </script>
 
 <template>
-  <div class="flex justify-center items-start min-h-[80vh] p-5 bg-gray-50">
-    <div class="w-full max-w-3xl bg-white p-8 rounded-lg shadow-md">
+  <div class="flex justify-center items-start min-h-[80vh] bg-gray-50">
+    <div class="w-full bg-white rounded-lg shadow-md">
       <navbar />
       <userProfile />
       <footer1 />

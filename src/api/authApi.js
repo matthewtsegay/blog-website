@@ -12,8 +12,8 @@ export const deleteUser = async (id) => {
     const response = await api.delete(`/delete/${id}`)
     return response.data
   }
-export const ForgetPassword = async (id,data) => {
-   const response = await api.put(`/forgetpassword/${id}`,data)
+export const ForgotPassword = async (data) => {
+   const response = await api.put('/forgetpassword',data)
    return response.data
 }
 export const resetPassword = async (id,data) => {

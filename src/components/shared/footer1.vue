@@ -1,9 +1,9 @@
 <template>
-   <footer class="bg-gray-800 text-white py-4 mt-10">
+   <footer class="bg-gray-600 text-white py-4 mt-10">
      <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
        
        <div>
-         <h2 class="text-2xl font-bold text-blue-400">Blog website</h2>
+         <h2 class="text-2xl font-bold text-white">Blog website</h2>
          <p class="mt-2 text-gray-400">&copy; {{ year }} VueBlog. All rights reserved.</p>
        </div>
  
