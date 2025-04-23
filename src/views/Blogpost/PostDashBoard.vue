@@ -1,3 +1,4 @@
+
 <template>
   <navbar />
   <div class="p-4 mb-100">
@@ -21,6 +22,7 @@
               type="text"
               placeholder="Enter keyword..."
               class="w-full pl-10 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-400"
+              @input="debounceSearch"
             />
           </div>
         </div>
@@ -85,6 +87,7 @@ import { getAllPosts, deletePost } from '../../api/postsApi.js'
 const posts = ref([])
 const searchTerm = ref('')
 const router = useRouter()
+const debounceTimeout = ref(null)
 
 const fetchPosts = async () => {
   posts.value = await getAllPosts()
@@ -117,11 +120,14 @@ const filteredPosts = computed(() => {
   )
 })
 
+const debounceSearch = () => {
+  clearTimeout(debounceTimeout.value)
+  debounceTimeout.value = setTimeout(() => {
+    // Add any additional logic here if needed
+  }, 500)
+}
+
 onMounted(() => {
   fetchPosts()
 })
 </script>
-
-<style scoped>
-/* Optional: Add custom responsive tweaks if needed */
-</style>
