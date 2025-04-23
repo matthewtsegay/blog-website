@@ -1,12 +1,11 @@
 <template>
-  <nav :class="[authStore.isAuthenticated ? 'bg-blue-100' : 'bg-transparent', 'shadow-md px-6 py-6 flex items-center justify-between relative']">
-    <!-- Left: Blog Website Badge -->
+  <nav :class="[!authStore.isAuthenticated ? 'bg-blue-100' : 'bg-transparent', 'shadow-md px-6 py-6 flex items-center justify-between relative w-full']">
     <div class="flex items-center">
       <router-link to="/" class="text-2xl font-bold text-blue-600">
-        Blog Website
+       {{ badge }}
       </router-link>
     </div>
-    <div v-if="!authStore.isAuthenticated" class="absolute left-1/2 transform -translate-x-1/2">
+    <div v-if="authStore.isAuthenticated" class="absolute left-1/2 transform -translate-x-1/2">
       <div class="relative" ref="dropdownRef">
         <button
           @click="toggleDropdown"

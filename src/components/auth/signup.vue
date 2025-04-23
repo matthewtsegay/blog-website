@@ -160,6 +160,7 @@ const nextStep = () => {
 const handlesubmit = async () => {
   try {
     await signup(user.value)
+    authStore.set(user.value)
     router.push({ name: 'loginView' })
   } catch (err) {
     console.log(err.message)

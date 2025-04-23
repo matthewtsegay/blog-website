@@ -105,29 +105,42 @@
  </template>
  
  <script setup>
- import { ref } from 'vue'
- import { useAuthStore } from '../../store/auth.js'
- 
- const authStore = useAuthStore()
- 
- const firstName = ref(authStore.user?.firstName || '')
- const lastName = ref(authStore.user?.lastName || '')
- const username = ref(authStore.user?.username || '')
- const email = ref(authStore.user?.email || '')
- const phoneNumber = ref(authStore.user?.phoneNumber || '')
- const bio = ref(authStore.user?.bio || '')
- const profilePicture = ref(authStore.user?.profilePicture || '')
- 
- const isEditing = ref(false)
- 
- const submitProfile = () => {
-   authStore.user.firstName = firstName.value
-   authStore.user.lastName = lastName.value
-   authStore.user.username = username.value
-   authStore.user.email = email.value
-   authStore.user.phoneNumber = phoneNumber.value
-   authStore.user.bio = bio.value
-   isEditing.value = false
- }
- </script>
- 
+import { ref } from 'vue'
+import { useAuthStore } from '../../store/auth.js'
+import { updateprofile } from '../../api/authApi.js'
+
+const authStore = useAuthStore()
+
+const firstName = ref(authStore.user?.firstName || '')
+const lastName = ref(authStore.user?.lastName || '')
+const username = ref(authStore.user?.username || '')
+const email = ref(authStore.user?.email || '')
+const phoneNumber = ref(authStore.user?.phoneNumber || '')
+const bio = ref(authStore.user?.bio || '')
+const profilePicture = ref(authStore.user?.profilePicture || '')
+
+const isEditing = ref(false)
+
+const submitProfile = async () => {
+  const updatedUser = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    username: username.value,
+    email: email.value,
+    phoneNumber: phoneNumber.value,
+    bio: bio.value,
+    profilePicture: profilePicture.value,
+  }
+
+  try {
+    const result = await updateprofile(updatedUser)
+
+    // Update authStore after successful backend update
+    authStore.user = result
+    isEditing.value = false
+  } catch (error) {
+    console.error('Error updating profile:', error)
+    alert('Failed to update profile. Please try again.')
+  }
+}
+</script>

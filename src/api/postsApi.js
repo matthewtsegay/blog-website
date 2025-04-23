@@ -20,18 +20,3 @@ export const deletePost = async (id) =>{
     const response = await api.delete(`/posts/${id}`)
     return response.data
 }
-// Like/Dislike API Services
-export const likePost = async (postId) => {
-    const response = await api.post(`/posts/${postId}/like`)
-    return response.data
-  }
-  
-export const dislikePost = async (postId) => {
-    const response = await api.post(`/posts/${postId}/dislike`)
-    return response.data
-  }
-  
-export const removeReaction = async (postId) => {
-    const response = await api.post(`/posts/${postId}/remove-reaction`)
-    return response.data
-  }

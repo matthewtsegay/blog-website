@@ -78,7 +78,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import navbar from '../../components/shared/navbar.vue'
-import { getAllPosts, deletePost } from '../../api/postsApi.js'
+import { getAllPosts, deletePost ,updatePost} from '../../api/postsApi.js'
 
 const posts = ref([])
 const searchTerm = ref('')

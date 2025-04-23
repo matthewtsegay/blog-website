@@ -1,6 +1,6 @@
 <template>
   <div class="login-page flex h-screen w-full relative overflow-hidden">
-    <div class="quote   hidden md:flex w-2/3 items-center justify-center px-8 relative">
+    <div class="quote   hidden md:flex w-2/3 items-center justify-center  relative">
       <div
         class="absolute inset-0 rounded-l-3xl overflow-hidden bg-cover bg-center mt-4"
         :style="{ backgroundImage: 'url(/src/assets/image/office-581127_1280.jpg)' }"

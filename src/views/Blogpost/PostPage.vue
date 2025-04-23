@@ -13,7 +13,6 @@
     <p class="text-sm text-gray-600">Category: {{ post.category }}</p>
     <p class="text-sm text-gray-600 mb-4">Tags: {{ post.tags.join(', ') }}</p>
 
-    <!-- Like/Dislike Section -->
     <LikeDislikeButton
       :likes="post.likes"
       :dislikes="post.dislikes"
@@ -21,8 +20,6 @@
       :postId="post.id"
       @reaction-updated="updateReaction"
     />
-
-    <!-- Comments -->
     <div class="comments mt-6 border-t pt-4">
       <h3 class="text-lg font-semibold mb-2">Comments</h3>
       <div
