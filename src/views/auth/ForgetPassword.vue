@@ -40,7 +40,7 @@
           <button
             type="submit"
             :disabled="loading"
-            class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold"
+            class="w-full bg-white text-blue-600 py-3 rounded-lg hover:bg-blue-700 focus:outline-none border border-blue-500 hover:text-white focus:ring-2 focus:ring-blue-400 transition duration-300 font-semibold"
           >
             {{ loading ? 'Sending...' : 'Send Reset Link' }}
           </button>

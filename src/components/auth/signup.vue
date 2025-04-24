@@ -139,7 +139,7 @@ const user = ref({
   bio: ''
 })
 
-const step = ref(1)
+const step = ref(3)
 const error = ref('')
 
 const nextStep = () => {

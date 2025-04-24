@@ -51,13 +51,13 @@ const onDragLeave = () => {
 </script>
 
 <template>
-  <div class="mb-4 w-full sm:w-[28rem] sm:ml-20 flex flex-col sm-flex-row justify-center">
+  <div class="mb-4 w-full sm:w-[28rem] sm:ml-4 sm:mr-40 flex flex-col sm-flex-row justify-center">
     <label :for="id" class="block text-sm font-extrabold text-gray-700 mb-1">
       {{ label }}
     </label>
 
     <div
-      class="border-2 rounded-full  border-dashed  p-6 flex flex-col items-center justify-center text-gray-500 cursor-pointer transition"
+      class="border-2 rounded-full w-sm border-dashed mr-20 px-auto flex flex-col items-center justify-center text-gray-500 cursor-pointer transition"
       :class="{
         'border-blue-400 bg-blue-50': isDragging,
         'border-gray-300': !isDragging

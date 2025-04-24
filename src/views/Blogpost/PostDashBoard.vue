@@ -38,11 +38,11 @@
       <table class="min-w-full bg-white rounded-xl shadow text-sm">
         <thead class="bg-gray-200 text-gray-700">
           <tr>
-            <th class="text-left py-3 px-4">#</th>
-            <th class="text-left py-3 px-4">Title</th>
-            <th class="text-left py-3 px-4">Content</th>
-            <th class="text-left py-3 px-4">Date</th>
-            <th class="text-left py-3 px-4">Actions</th>
+            <th class="text-left py-3 px-4 bg-gray-200">#</th>
+            <th class="text-left py-3 px-4 bg-gray-300">Title</th>
+            <th class="text-left py-3 px-4 bg-gray-200">Content</th>
+            <th class="text-left py-3 px-4 bg-gray-300">Date</th>
+            <th class="text-left py-3 px-4 bg-gray-200">Actions</th>
           </tr>
         </thead>
         <tbody>
