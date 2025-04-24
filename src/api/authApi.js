@@ -28,3 +28,7 @@ export const upload_image = async (id,image) => {
   const response = await api.post(`/upload-profile-picture/${id}`,image)
   return response.data
 }
+export const getProfile = async (id) =>{
+  const response = await api.get(`/get-profile/${id}`)
+  return response.data
+}

@@ -24,7 +24,7 @@ const router=createRouter({
             path:'/ProfileView',
             name:'ProfileView',
             component:()=>import('../views/auth/ProfileView.vue'),
-            meta:{requireAuth:true}
+           // meta:{requireAuth:true}
         },
         {
           path:'/createPost',
