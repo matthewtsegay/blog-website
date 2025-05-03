@@ -1,4 +1,5 @@
-import api from "../services/apiServices"
+import api from "../services/apiServices.js"
+
 
 export const signup = async (data) => {
     const response = await api.post('/signup', data)
@@ -13,22 +14,26 @@ export const deleteuser = async (id) => {
     return response.data
   }
 export const ForgotPassword = async (data) => {
-   const response = await api.put('/forgot-password',data)
+   const response = await api.post('/forgot-password',data)
    return response.data
 }
-export const resetPassword = async (id,data) => {
-  const response = await api.put(`/reset-password/${id}`,data)
+export const resetPassword = async (data) => {
+  const response = await api.put(`/reset-password`,data)
   return response.data
 }
-export const updateprofile = async (id,userdata) => {
+export const updateProfile = async (id,userdata) => {
   const response = await api.put(`/update-profile/${id}`,userdata)
   return response.data
 }
-export const upload_image = async (id,image) => {
-  const response = await api.post(`/upload-profile-picture/${id}`,image)
+export const getProfile = async (id) =>{
+  const response = await api.get(`/${id}`)
   return response.data
 }
-export const getProfile = async (id) =>{
-  const response = await api.get(`/get-profile/${id}`)
+export const VerifyCode = async (data) =>{
+  const response = await api.post('/verify-reset-code',data)
+  return response.data
+}
+export const ResetPassword = async (data) =>{
+  const response = await api.put ('/reset-password',data)
   return response.data
 }

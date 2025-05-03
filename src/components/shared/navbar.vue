@@ -6,7 +6,6 @@
       </router-link>
     </div>
 
-    <!-- Blog Dropdown (centered) -->
     <div v-if="authStore.isAuthenticated" class="absolute left-1/2 transform -translate-x-1/2">
       <div class="relative" ref="dropdownRef">
         <button
@@ -46,7 +45,6 @@
       </div>
     </div>
 
-    <!-- Right-side section -->
     <div class="flex items-center space-x-4">
       <template v-if="!authStore.isAuthenticated">
         <!-- User Dropdown -->
@@ -81,7 +79,6 @@
       </template>
 
       <template v-else>
-        <!-- Profile Dropdown -->
         <div class="relative text-center" ref="profileDropdownRef">
           <img
             @click="toggleProfileDropdown"

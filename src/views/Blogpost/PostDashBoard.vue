@@ -1,4 +1,3 @@
-
 <template>
   <navbar />
   <div class="p-4 mb-100">
@@ -6,16 +5,10 @@
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
         <h1 class="text-2xl font-semibold text-gray-800">Blog Posts</h1>
         <div class="relative flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-1/2">
-          <label for="search" class="block text-md font-semibold text-gray-700">
-            Search
-          </label>
+          <label for="search" class="block text-md font-semibold text-gray-700">Search</label>
           <div class="relative w-full">
-            <span
-              class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 transition-opacity duration-200"
-              :class="{ 'opacity-0': searchTerm }"
-            >
-              🔍
-            </span>
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 transition-opacity duration-200"
+              :class="{ 'opacity-0': searchTerm }">🔍</span>
             <input
               id="search"
               v-model="searchTerm"
@@ -38,11 +31,12 @@
       <table class="min-w-full bg-white rounded-xl shadow text-sm">
         <thead class="bg-gray-200 text-gray-700">
           <tr>
-            <th class="text-left py-3 px-4 bg-gray-200">#</th>
+            <th class="text-left py-3 px-4 bg-gray-100">#</th>
             <th class="text-left py-3 px-4 bg-gray-300">Title</th>
-            <th class="text-left py-3 px-4 bg-gray-200">Content</th>
+            <th class="text-left py-3 px-4 bg-gray-300">Content</th>
             <th class="text-left py-3 px-4 bg-gray-300">Date</th>
-            <th class="text-left py-3 px-4 bg-gray-200">Actions</th>
+            <th class="text-left py-3 px-4 bg-gray-300">Category</th>
+            <th class="text-left py-3 px-4 bg-gray-300">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -51,11 +45,12 @@
             :key="post.id"
             class="border-b hover:bg-gray-50"
           >
-            <td class="py-3 px-4 bg-gray-400 text-white">{{ index + 1 }}</td>
-            <td class="py-3 px-4 bg-gray-200 font-medium">{{ post.title }}</td>
-            <td class="py-3 px-4 bg-gray-400 text-white truncate max-w-xs">{{ post.content }}</td>
-            <td class="py-3 px-4 bg-gray-200 text-gray-800">{{ formatDate(post.created_at) }}</td>
-            <td class="py-3 px-4 bg-gray-400 space-x-2">
+            <td class="py-3 px-4 bg-gray-300 text-white">{{ index + 1 }}</td>
+            <td class="py-3 px-4 bg-gray-100 font-medium">{{ post.title }}</td>
+            <td class="py-3 px-4 bg-gray-200 text-gray-800 truncate max-w-xs">{{ post.content }}</td>
+            <td class="py-3 px-4 bg-gray-100 text-gray-800">{{ formatDate(post.created_at) }}</td>
+            <td class="py-3 px-4 bg-gray-200 text-gray-800">{{ post.catagory }}</td>
+            <td class="py-3 px-4 bg-gray-100 space-x-2">
               <button
                 @click="editPost(post.id)"
                 class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
@@ -103,7 +98,11 @@ const createPost = () => {
 }
 
 const editPost = (id) => {
-  router.push({ name: 'editPost', params: { id } })
+  const postToEdit = posts.value.find(post => post.id === id)
+  if (postToEdit) {
+    localStorage.setItem('editPost', JSON.stringify(postToEdit))
+    router.push({ name: 'EditPost', params: { id } })
+  }
 }
 
 const formatDate = (dateString) => {
@@ -122,9 +121,7 @@ const filteredPosts = computed(() => {
 
 const debounceSearch = () => {
   clearTimeout(debounceTimeout.value)
-  debounceTimeout.value = setTimeout(() => {
-    // Add any additional logic here if needed
-  }, 500)
+  debounceTimeout.value = setTimeout(() => {}, 500)
 }
 
 onMounted(() => {

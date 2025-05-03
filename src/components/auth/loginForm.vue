@@ -1,6 +1,6 @@
 <template>
   <div class="login-page flex h-screen w-full relative overflow-hidden pt-4">
-    <div class="quote   hidden md:flex w-2/3 items-center justify-center  relative pt-4">
+    <div class="quote hidden md:flex w-2/3 items-center justify-center relative pt-4">
       <div
         class="absolute inset-0 rounded-l-3xl overflow-hidden bg-cover bg-center"
         :style="{ backgroundImage: 'url(/src/assets/image/office-581127_1280.jpg)' }"
@@ -33,7 +33,6 @@
           />
         </div>
 
-  
         <div>
           <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
           <input
@@ -52,7 +51,6 @@
           </button>
           <span v-if="error" class="text-red-500 text-xs">{{ error }}</span>
         </div>
-
 
         <button
           type="submit"
@@ -90,15 +88,32 @@ const handlesubmit = async () => {
   loading.value = true
   error.value = ''
   try {
-    const user = await login(credentials.value)
+    // 1) Call login() 
+    const res = await login(credentials.value)
+
+    // 2) Normalize: if this was an Axios response, use res.data; otherwise use res itself
+    const user = res.data ?? res
+
+    // 3) Now user.id or user.userId should be defined
+    //    Use whichever field your backend actually returns:
+    const idToStore = user.id || user.userId
+    if (!idToStore) {
+      throw new Error('No user ID in login response')
+    }
+
+    // 4) Store into localStorage
+    localStorage.setItem('userId', idToStore)
+
+    // 5) Update your store and redirect
     authStore.set(user)
     router.push({ name: 'PostDashBoard' })
   } catch (err) {
-    error.value = err.response?.data?.message || 'Login failed. Please try again.'
+    error.value = err.response?.data?.message || err.message || 'Login failed. Please try again.'
   } finally {
     loading.value = false
   }
 }
+
 
 const goToSignup = () => router.push({ name: 'signupView' })
 const goToForgotPassword = () => router.push({ name: 'ForgetPassword' })

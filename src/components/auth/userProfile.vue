@@ -1,10 +1,10 @@
 <template>
   <div class="max-w-xl mt-6 mx-auto p-6 bg-white rounded-lg shadow-md">
     <div class="mb-1">
-      <h1 class="text-2xl font-bold text-white py-3 bg-blue-600 rounded-t-md text-center">
+      <h1 class="text-2xl font-bold text-white py-3 bg-gray-400 rounded-t-md text-center">
         Welcome, {{ profile.firstName }}
       </h1>
-      <h2 class="text-xl font-semibold text-white bg-blue-500 py-2 px-4 text-left">
+      <h2 class="text-xl font-semibold text-white bg-gray-300 py-2 px-4 text-left">
         User Profile
       </h2>
     </div>
@@ -16,28 +16,28 @@
     <table class="w-full border border-blue-300 rounded-lg overflow-hidden">
       <tbody class="divide-y divide-blue-200">
         <tr class="bg-blue-50 hover:bg-blue-300 transition-colors">
-          <td class="font-semibold bg-blue-200 p-2 w-1/4">Name :</td>
-          <td class="p-4">
-            <div v-if="!isEditing" class="hover:bg-blue-300 transition-colors px-2 py-1 rounded-md">
+          <td class="font-semibold bg-gray-200 p-2 w-1/4">Name :</td>
+          <td  class="p-4">
+            <div v-if="!isEditing" class="hover:bg-gray-300 transition-colors px-2 py-1 rounded-md">
               {{ profile.firstName }} {{ profile.lastName }}
             </div>
             <div v-else class="flex space-x-2">
               <input v-model="profile.firstName" placeholder="First Name"
-                     class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                     class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400" />
               <input v-model="profile.lastName" placeholder="Last Name"
-                     class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                     class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400" />
             </div>
           </td>
         </tr>
 
         <tr class="bg-blue-50 hover:bg-blue-300 transition-colors">
-          <td class="font-semibold bg-blue-200 p-2">Username :</td>
+          <td class="font-semibold bg-gray-200 p-2">Username :</td>
           <td class="p-4">
             <div v-if="!isEditing" class="hover:bg-blue-300 transition-colors px-2 py-1 rounded-md">
               {{ profile.username }}
             </div>
             <input v-else v-model="profile.username"
-                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400" />
           </td>
         </tr>
 
@@ -107,7 +107,7 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
 import { useAuthStore } from '../../store/auth.js'
-import { getProfile, updateprofile } from '../../api/authApi.js'
+import { getProfile, updateProfile } from '../../api/authApi.js'
 
 const authStore = useAuthStore()
 const isEditing = ref(false)
@@ -119,12 +119,18 @@ const profile = reactive({
   email: '',
   phoneNumber: '',
   bio: '',
-  profilePicture: ''
+  profilePicture: null
 })
 
 const fetchProfile = async () => {
+  const userId = localStorage.getItem('userId') // Retrieve the userId from localStorage
+  if (!userId) {
+    console.error('User ID not found in localStorage')
+    return
+  }
+
   try {
-    const result = await getProfile()
+    const result = await getProfile(userId) // Use the userId to fetch profile data
     Object.assign(profile, result)
   } catch (error) {
     console.error('Failed to fetch profile:', error)
@@ -132,10 +138,29 @@ const fetchProfile = async () => {
 }
 
 const submitProfile = async () => {
+  const userId = localStorage.getItem('userId') // Get the userId from localStorage again for submission
+  if (!userId) {
+    console.error('User ID not found in localStorage')
+    return
+  }
+
   try {
-    const result = await updateprofile({ ...profile })
-    Object.assign(profile, result)
-    authStore.user = result 
+    const formData = new FormData()
+
+    formData.append('firstName', profile.firstName)
+    formData.append('lastName', profile.lastName)
+    formData.append('username', profile.username)
+    formData.append('email', profile.email)
+    formData.append('phoneNumber', profile.phoneNumber)
+    formData.append('bio', profile.bio)
+
+    if (profile.profilePicture) {
+      formData.append('profilePicture', profile.profilePicture)
+    }
+
+    const result = await updateProfile(userId, formData) // Use FormData to submit data
+    Object.assign(profile, result) // Update profile with the response
+    authStore.user = result // Update the user in auth store
     isEditing.value = false
   } catch (error) {
     console.error('Error updating profile:', error)

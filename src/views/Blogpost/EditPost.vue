@@ -1,34 +1,151 @@
 <template>
-    <div>
-      <h1>Edit Post</h1>
-      <form @submit.prevent="submitPost">
-        <input v-model="post.title" placeholder="Title" required />
-        <textarea v-model="post.content" placeholder="Content" required></textarea>
-        <input v-model="post.image" placeholder="Image URL" />
-        <input v-model="post.category" placeholder="Category" required />
-        <input v-model="post.tags" placeholder="Tags (comma-separated)" />
-        <button type="submit">Update</button>
+  <navbar />
+
+  <div class="min-h-screen flex items-center justify-center bg-gray-300 py-8">
+    <div class="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md">
+      <h1 class="text-2xl font-semibold mb-6 text-center">Edit Post</h1>
+
+      <form @submit.prevent="handleUpdatePost" class="space-y-6">
+        
+        <!-- Image display (click to show upload form) -->
+        <div v-if="imagePath" class="flex justify-center">
+          <img
+            :src="imagePath"
+            alt="Current Image"
+            class="w-48 h-48 object-cover rounded mb-4 cursor-pointer"
+            @click="isUploadVisible = true" 
+          />
+        </div>
+
+        <!-- Upload form (shown only when isUploadVisible is true) -->
+        <div v-if="isUploadVisible" class="flex justify-center">
+          <FormImageUpload
+            v-model="post.image"
+            id="image"
+            label="Upload Image"
+            class="w-full"
+          />
+        </div>
+
+        <!-- Title -->
+        <div>
+          <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+          <input v-model="post.title" type="text" id="title" required class="w-full border rounded p-2" />
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <input v-model="post.category" type="text" id="category" required class="w-full border rounded p-2" />
+        </div>
+
+        <!-- Tags -->
+        <div>
+          <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+          <input v-model="post.tags" type="text" id="tags" class="w-full border rounded p-2" />
+        </div>
+
+        <!-- Content -->
+        <div>
+          <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+          <textarea v-model="post.content" id="content" rows="6" required class="w-full border rounded p-2"></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+          Update Post
+        </button>
       </form>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref, onMounted } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
-  import { getPost, updatePost } from '../api/postService';
-  
-  const route = useRoute();
-  const router = useRouter();
-  const post = ref({ title: '', content: '', image: '', category: '', tags: [] });
-  
-  onMounted(async () => {
-    const data = await getPost(route.params.id);
-    post.value = { ...data, tags: data.tags.join(', ') };
-  });
-  
-  async function submitPost() {
-    const formattedPost = { ...post.value, tags: post.value.tags.split(',').map(tag => tag.trim()) };
-    await updatePost(route.params.id, formattedPost);
-    router.push('/user-posts');
+  </div>
+
+  <footer1 />
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { getPost, updatePost } from '../../api/postsApi.js';
+import FormImageUpload from '../../components/shared/FormImageUpload.vue';
+import navbar from '../../components/shared/navbar.vue';
+import footer1 from '../../components/shared/footer1.vue';
+
+const router = useRouter();
+const postId = localStorage.getItem('createdPostId');
+const userId = localStorage.getItem('userId');
+
+// Initialize post and image path
+const post = ref({
+  title: '',
+  content: '',
+  image: null,
+  category: '',
+  tags: ''
+});
+
+const imagePath = ref(localStorage.getItem('imagePath') || null);
+
+// Toggle for image upload form visibility
+const isUploadVisible = ref(false);
+
+// Image change handler
+const handleImageUpload = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    post.value.image = file;
   }
-  </script>
+};
+
+// Fetch and load post data
+const loadPost = async () => {
+  try {
+    const data = await getPost(postId);
+    post.value = {
+      title: data.title,
+      content: data.content,
+      category: data.category,
+      tags: data.tags.join(', '),
+      image: null
+    };
+    imagePath.value = data.imagePath;
+    localStorage.setItem('imagePath', data.imagePath); // Save image path in localStorage
+  } catch (error) {
+    console.error('Error loading post:', error);
+  }
+};
+
+// Handle post update
+const handleUpdatePost = async () => {
+  if (!userId) {
+    console.error("User ID is missing");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('postId', postId);
+    formData.append('userId', userId);
+    formData.append('title', post.value.title);
+    formData.append('content', post.value.content);
+    formData.append('category', post.value.category);
+    formData.append('tags', post.value.tags);
+    if (post.value.image) {
+      formData.append('image', post.value.image);
+    }
+
+    await updatePost(postId, formData);
+
+    // If a new image was uploaded, update localStorage with the new path
+    if (post.value.image) {
+      const updated = await getPost(postId);
+      imagePath.value = updated.imagePath;
+      localStorage.setItem('imagePath', updated.imagePath);
+    }
+
+    router.push('/PostDashBoard');
+  } catch (error) {
+    console.error('Error updating post:', error);
+  }
+};
+
+onMounted(loadPost);
+</script>

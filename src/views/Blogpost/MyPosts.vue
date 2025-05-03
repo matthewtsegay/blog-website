@@ -4,7 +4,6 @@
     class="min-h-screen bg-cover bg-center px-4 py-10"
     style="background-image: url('/images/blog-bg.jpg')"
   >
-    <!-- Title and Toggle Switch -->
     <div class="flex justify-between items-center mb-10 max-w-7xl mx-auto px-4">
       <h1 class="text-4xl font-bold text-black">My Blog Posts</h1>
       <div class="flex items-center gap-3">
@@ -12,7 +11,7 @@
           {{ layout === 'carousel' ? 'Carousel View' : 'Grid View' }}
         </span>
         <label class="relative inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="sr-only peer" v-model="isGrid" @change="toggleLayout">
+          <input type="checkbox" class="sr-only peer" v-model="isGrid" @change="toggleLayout" />
           <div
             class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:bg-blue-600 transition-all duration-300"
           ></div>
@@ -26,7 +25,12 @@
     <div class="bg-white bg-opacity-90 rounded-xl shadow-2xl max-w-7xl mx-auto p-8">
       <!-- Carousel Layout -->
       <div v-if="layout === 'carousel'" class="relative">
-        <button @click="prevSlide" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-300 hover:bg-gray-400 p-3 rounded-full shadow-md">&#10094;</button>
+        <button
+          @click="prevSlide"
+          class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-300 hover:bg-gray-400 p-3 rounded-full shadow-md"
+        >
+          &#10094;
+        </button>
 
         <div class="overflow-hidden">
           <div
@@ -43,7 +47,12 @@
           </div>
         </div>
 
-        <button @click="nextSlide" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-300 hover:bg-gray-400 p-3 rounded-full shadow-md">&#10095;</button>
+        <button
+          @click="nextSlide"
+          class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-300 hover:bg-gray-400 p-3 rounded-full shadow-md"
+        >
+          &#10095;
+        </button>
       </div>
 
       <!-- Grid Layout -->
@@ -67,12 +76,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted,computed } from 'vue';
-import { getAllPosts, deletePost } from '../../api/postsApi.JS';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { getAllPosts, deletePost } from '../../api/postsApi.js';
 import navbar from '../../components/shared/navbar.vue';
 import footer1 from '../../components/shared/footer1.vue';
 import BlogCard from '../../components/shared/BlogCard.vue';
 
+const router = useRouter();
 const userPosts = ref([]);
 const currentSlide = ref(0);
 const layout = ref('carousel');
@@ -81,9 +92,25 @@ const postsPerPage = 6;
 const currentPage = ref(1);
 
 onMounted(async () => {
-  const allPosts = await getAllPosts();
-  const userId = localStorage.getItem('userId');
-  userPosts.value = allPosts.filter(post => post.userId === userId);
+  try {
+    const rawUserId = localStorage.getItem('userId');
+
+    if (!rawUserId) {
+      router.push({ name: 'loginView' });
+      return;
+    }
+
+    const userId = Number(rawUserId);
+    const posts = await getAllPosts();
+
+    if (posts && Array.isArray(posts)) {
+      userPosts.value = posts.filter(post => post.userId === userId);
+    } else {
+      console.error('Unexpected response structure:', posts);
+    }
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+  }
 });
 
 function toggleLayout() {
@@ -91,8 +118,11 @@ function toggleLayout() {
 }
 
 function removePost(id) {
-  deletePost(id);
-  userPosts.value = userPosts.value.filter(post => post.id !== id);
+  deletePost(id)
+    .then(() => {
+      userPosts.value = userPosts.value.filter(post => post.id !== id);
+    })
+    .catch(err => console.error('Delete failed:', err));
 }
 
 function prevSlide() {
@@ -112,3 +142,7 @@ function loadMore() {
   currentPage.value++;
 }
 </script>
+
+<style scoped>
+/* Optional custom styles */
+</style>

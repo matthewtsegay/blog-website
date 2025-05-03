@@ -20,93 +20,117 @@
         class="w-full max-w-sm bg-white border border-gray-200 rounded-xl shadow-xl p-8 space-y-6"
       >
         <h2 class="text-3xl font-extrabold text-center text-blue-600">Create Account</h2>
+
         <div v-if="step === 1">
-          <FormInput label="Username" 
-                     v-model="user.username"
-                     placeholder="username" 
-                     type="text" 
-                     id="username" 
-                     autocomplete="username" 
-                     required
-           />
-          <FormInput label="Password" 
-                     v-model="user.password" 
-                     type="password" 
-                     placeholder="********" 
-                     id="password" 
-                     autocomplete="new-password"
-                     required
-         />
-          <FormInput label="Confirm Password" 
-                     v-model="user.confirmpassword" 
-                     type="password" 
-                     placeholder="********" 
-                     id="confirmpassword" 
-                     autocomplete="new-password" 
-                     required 
-         />
+          <FormInput
+            label="Username"
+            v-model="user.username"
+            placeholder="username"
+            type="text"
+            id="username"
+            autocomplete="username"
+            required
+          />
+          <FormInput
+            label="Password"
+            v-model="user.password"
+            type="password"
+            placeholder="********"
+            id="password"
+            autocomplete="new-password"
+            required
+          />
+          <FormInput
+            label="Confirm Password"
+            v-model="user.confirmpassword"
+            type="password"
+            placeholder="********"
+            id="confirmpassword"
+            autocomplete="new-password"
+            required
+          />
         </div>
+
         <div v-if="step === 2">
-          <FormInput label="First Name" 
-                     v-model="user.firstName" 
-                     placeholder="first name" 
-                     type="text" 
-                     id="firstname" 
-                     autocomplete="firstName" 
-                     required 
+          <FormInput
+            label="First Name"
+            v-model="user.firstName"
+            placeholder="first name"
+            type="text"
+            id="firstname"
+            autocomplete="firstName"
+            required
           />
-          <FormInput label="Last Name" 
-                     v-model="user.lastName" 
-                     placeholder="last name" 
-                     type="text" 
-                     id="lastname" 
-                     autocomplete="lastName" 
-                     required
-         />
-          <FormInput label="Email" 
-                     v-model="user.email" 
-                     placeholder="email" 
-                     type="email" 
-                     id="email" 
-                     autocomplete="email" 
-                     required
-         />
-          <FormInput label="Phone Number" 
-                     v-model="user.phoneNumber" 
-                     placeholder="+251----------" 
-                     type="tel" 
-                     id="phone-number" 
-                     autocomplete="tel" 
-                     required 
+          <FormInput
+            label="Last Name"
+            v-model="user.lastName"
+            placeholder="last name"
+            type="text"
+            id="lastname"
+            autocomplete="lastName"
+            required
+          />
+          <FormInput
+            label="Email"
+            v-model="user.email"
+            placeholder="email"
+            type="email"
+            id="email"
+            autocomplete="email"
+            required
+          />
+          <FormInput
+            label="Phone Number"
+            v-model="user.phoneNumber"
+            placeholder="+251----------"
+            type="tel"
+            id="phone-number"
+            autocomplete="tel"
+            required
           />
         </div>
+
         <div v-if="step === 3">
-          <FormImageUpload label="Profile Picture" 
-                           v-model="user.profilePicture" 
-                           id="profile-picture" 
-          />
           <div class="mb-4">
             <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
-            <textarea id="bio" 
-                      v-model="user.bio" 
-                      rows="3" 
-                      class="mt-1 block w-full border rounded-lg p-2" 
-                      placeholder="Write a short bio...">
-            </textarea>
+            <textarea
+              id="bio"
+              v-model="user.bio"
+              rows="3"
+              class="mt-1 block w-full border rounded-lg p-2"
+              placeholder="Write a short bio..."
+            ></textarea>
           </div>
         </div>
+
         <div v-if="error" class="text-red-500 text-sm -mt-2">{{ error }}</div>
+
         <div class="flex justify-between mt-4">
-          <button v-if="step > 1" type="button" @click="step--" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+          <button
+            v-if="step > 1"
+            type="button"
+            @click="step--"
+            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+          >
             Back
           </button>
-          <button v-if="step < 3" type="button" @click="nextStep" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          <button
+            v-if="step < 3"
+            type="button"
+            @click="nextStep"
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
             Next
           </button>
-          <button v-if="step === 3" type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+          <button
+            v-if="step === 3"
+            type="submit"
+            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
             Submit
           </button>
         </div>
+
         <p class="mt-4 text-sm text-center">
           Already have an account?
           <router-link to="/loginView" class="text-blue-500 hover:underline">Login</router-link>
@@ -117,15 +141,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../store/auth.js'
-import  {signup} from '../../api/authApi.js'
-import FormInput from '../shared/FormInput.vue'
-import FormImageUpload from '../shared/FormImageUpload.vue'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../../store/auth.js';
+import { signup } from '../../api/authApi.js';
+import FormInput from '../shared/FormInput.vue';
 
-const router = useRouter()
-const authStore = useAuthStore()
+const router = useRouter();
+const authStore = useAuthStore();
 
 const user = ref({
   username: '',
@@ -135,38 +158,56 @@ const user = ref({
   lastName: '',
   email: '',
   phoneNumber: '',
-  profilePicture: null,
   bio: ''
-})
+});
 
-const step = ref(3)
-const error = ref('')
+const step = ref(1);
+const error = ref('');
 
 const nextStep = () => {
-  if (step.value === 1 && (!user.value.username || !user.value.password || !user.value.confirmpassword)) {
-    error.value = 'Please fill out all fields.'
-    return
+  error.value = '';
+  if (step.value === 1) {
+    if (!user.value.username || !user.value.password || !user.value.confirmpassword) {
+      error.value = 'Please fill out all fields.';
+      return;
+    }
+    if (user.value.password !== user.value.confirmpassword) {
+      error.value = 'Passwords do not match.';
+      return;
+    }
   }
-
-  if (step.value === 1 && user.value.password !== user.value.confirmpassword) {
-    error.value = 'Passwords do not match.'
-    return
-  }
-
-  error.value = ''
-  step.value++
-}
+  step.value++;
+};
 
 const handlesubmit = async () => {
   try {
-    await signup(user.value)
-    authStore.set(user.value)
-    router.push({ name: 'loginView' })
+    // 1) Call signup()
+    const res = await signup(user.value);
+
+    // 2) Normalize: use res.data if present, otherwise res itself
+    const createdUser = res.data ?? res;
+
+    // 3) Extract the ID (in case your backend uses `id` or `userId`)
+    const idToStore = createdUser.id || createdUser.userId;
+    if (!idToStore) {
+      throw new Error('No user ID returned from signup');
+    }
+
+    // 4) Store into localStorage
+    localStorage.setItem('userId', idToStore);
+    console.log('User ID saved successfully:', idToStore);
+
+    // 5) Update your Pinia store
+    authStore.set(createdUser);
+
+    // 6) Navigate to login
+    router.push({ name: 'loginView' });
   } catch (err) {
-    console.log(err.message)
-    error.value = err.message || 'Signup failed'
+    console.error(err);
+    error.value = err.response?.data?.message || err.message || 'Signup failed';
   }
-}
+};
+
 </script>
 
 <style scoped>

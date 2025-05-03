@@ -40,7 +40,6 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null
     delete axios.defaults.headers.common['Authorization']
   }
-
   return {
     user,
     token,

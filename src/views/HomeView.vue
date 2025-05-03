@@ -108,7 +108,7 @@
 
 <script setup>
 import { ref, onMounted,computed } from 'vue';
-import { getAllPosts, deletePost } from '../api/postsApi.JS';
+import { getAllPosts,getPost, deletePost } from '../api/postsApi.JS';
 import footer1 from '../components/shared/footer1.vue'
 import navbar from '../components/shared/navbar.vue'
 import BlogCard from '../components/shared/BlogCard.vue';

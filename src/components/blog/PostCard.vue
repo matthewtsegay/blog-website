@@ -1,6 +1,6 @@
 <template>
     <div class="post-card bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-        <img :src="post.image" alt="post-image" class="w-full h-48 object-cover">
+        <img :src="post.imagepath" alt="post-image" class="w-full h-48 object-cover">
         <div class="p-4">
            <h3>{{ post.title }}</h3>
            <p>{{ post.content.slice(0,100) }}</p>

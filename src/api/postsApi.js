@@ -1,22 +1,39 @@
-import api from  '../services/apiServices.js'
+import api1 from  '../services/blogApi.js'
 
 export const getAllPosts = async () => {
-    const response = await api.get('/posts')
+    const response = await api1.get('/posts')
     return response.data
 }
 export const getPostById = async (id) => {
-    const response = await api.get(`/posts/${id}`)
+    const response = await api1.get(`/posts/${id}`)
     return response.data
 }
-export const createPost = async (post) => {
-    const response = await api.post('/posts/create',post)
-    return response.data
-}
+export const createPost = async (formData) => {
+  try {
+      const response = await api1.post('/posts/create', formData);
+      return response.data;
+  } catch (error) {
+      console.error('Error creating post:', error.response?.data || error.message);
+      throw error;
+  }
+};
 export const updatePost = async (id,post) => {
-    const response = await api.put(`/posts/${id}`,post)
+    const response = await api1.put(`/posts/${id}`,post)
     return response.data
 }
 export const deletePost = async (id) =>{
-    const response = await api.delete(`/posts/${id}`)
+    const response = await api1.delete(`/posts/${id}`)
+    return response.data
+}
+//export const upload_image = async (id,image) => {
+//  const response = await api1.post(`/upload-profile`,image)
+//  return response.data
+//}
+export const getPost = async (postid) => {
+    const response = await api1.get(`/posts/${postid}`)
+    return response.data
+}
+export const updataPost = async (postid,data) =>{
+    const response = await api1.post(`/posts/${postid}`,data)
     return response.data
 }

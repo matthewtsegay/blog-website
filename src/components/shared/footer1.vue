@@ -20,12 +20,12 @@
  
        <div>
          <h3 class="text-lg font-semibold mb-3 text-white">Contact</h3>
-         <p class="text-gray-300">info@vueblog.com</p>
-         <p class="text-gray-300">+1 234 567 890</p>
+         <p class="text-gray-300">blog@gmail.com</p>
+         <p class="text-gray-300">+25198766565</p>
        </div>
      </div>
      <div class="border-t border-gray-700 mt-8 pt-4 text-lg italic text-center text-gray-100">
-       i ❤️ to make life simple with Vue.js
+       
      </div>
    </footer>
  </template>
