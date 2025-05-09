@@ -1,11 +1,20 @@
-import api from '../services/apiServices'
 
-export const getComments = async (Id) => {
-  const response = await api.get(`/blog/posts/${Id}/comments`)
-  return response.data
-}
+import api2 from '../services/commentApi.js';
 
-export const addComment = async (Id, data) => {
-  const response = await api.post(`/blog/posts/${Id}/comments`,data)
-  return response.data
+export const getComments = async (postId) => {
+  const response = await api2.get(`comments/post/${postId}`);
+  return response.data;
+};
+//export const addComment = async (data) => {
+ // const response = await api2.post('comments/add',data);
+//  return response.data;
+//};
+export const addComment = async (payload) => {
+  try {
+    const response = await api2.post('comments/add', payload)
+    return response.data
+  } catch (error) {
+    console.error('Error adding comment:', error.response ? error.response.data : error.message)
+    throw error
+  }
 }

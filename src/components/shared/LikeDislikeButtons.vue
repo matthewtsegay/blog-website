@@ -1,53 +1,74 @@
 <template>
-    <div class="flex gap-4 items-center">
-      <button
-        @click="handleLike"
-        :class="['flex items-center gap-1', userReaction === 'like' ? 'text-green-600 font-bold' : 'text-gray-600']">
-        👍 {{ likes }}
-      </button>
-      <button
-        @click="handleDislike"
-        :class="['flex items-center gap-1', userReaction === 'dislike' ? 'text-red-600 font-bold' : 'text-gray-600']">
-        👎 {{ dislikes }}
-      </button>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref, watch } from 'vue'
-  
-  const props = defineProps({
-    likes: Number,
-    dislikes: Number,
-    userReaction: String,
-  })
-  
-  const emit = defineEmits(['like', 'dislike'])
-  
-  const userReaction = ref(props.userReaction)
-  
-  watch(() => props.userReaction, (val) => {
-    userReaction.value = val
-  })
-  
-  function handleLike() {
-    if (userReaction.value === 'like') {
-      emit('like', 'remove')
-      userReaction.value = null
-    } else {
-      emit('like', 'add')
-      userReaction.value = 'like'
+  <div class="flex gap-4 items-center">
+    <button
+      @click="handleLikeClick"
+      :class="[
+        'flex items-center gap-1',
+        localReaction === 'like' ? 'text-green-600 font-bold' : 'text-gray-600'
+      ]"
+    >
+      👍 {{ localLikes }}
+    </button>
+
+    <button
+      @click="handleDislikeClick"
+      :class="[
+        'flex items-center gap-1',
+        localReaction === 'dislike' ? 'text-red-600 font-bold' : 'text-gray-600'
+      ]"
+    >
+      👎 {{ localDislikes }}
+    </button>
+  </div>
+</template>
+
+<script setup>
+import { ref, watchEffect } from 'vue'
+
+
+const props = defineProps({
+  likes: { type: Number, required: true },
+  dislikes: { type: Number, required: true },
+  userReaction: { type: String, default: null },
+})
+
+const emit = defineEmits(['like', 'dislike'])
+
+const localLikes = ref(props.likes)
+const localDislikes = ref(props.dislikes)
+const localReaction = ref(props.userReaction)
+
+watchEffect(() => {
+  localLikes.value = props.likes
+  localDislikes.value = props.dislikes
+  localReaction.value = props.userReaction
+})
+
+function handleLikeClick() {
+  if (localReaction.value === 'like') {
+    localLikes.value += 1
+    localReaction.value = null
+  } else {
+    if (localReaction.value === 'dislike') {
+      localDislikes.value += 1
     }
+    localLikes.value += 1
+    localReaction.value = 'like'
   }
-  
-  function handleDislike() {
-    if (userReaction.value === 'dislike') {
-      emit('dislike', 'remove')
-      userReaction.value = null
-    } else {
-      emit('dislike', 'add')
-      userReaction.value = 'dislike'
+  emit('like', localReaction.value)
+}
+
+function handleDislikeClick() {
+  if (localReaction.value === 'dislike') {
+    localDislikes.value += 1
+    localReaction.value = null
+  } else {
+    if (localReaction.value === 'like') {
+      localLikes.value += 1
     }
+    localDislikes.value += 1
+    localReaction.value = 'dislike'
   }
-  </script>
-  
+  emit('dislike', localReaction.value)
+}
+</script>

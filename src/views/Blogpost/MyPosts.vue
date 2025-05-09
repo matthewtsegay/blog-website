@@ -58,7 +58,7 @@
       <!-- Grid Layout -->
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <BlogCard
-          v-for="(post, index) in paginatedPosts"
+          v-for="post in paginatedPosts"
           :key="post.id"
           :post="post"
           @remove="removePost"
@@ -77,34 +77,33 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { getAllPosts, deletePost } from '../../api/postsApi.js';
 import navbar from '../../components/shared/navbar.vue';
 import footer1 from '../../components/shared/footer1.vue';
 import BlogCard from '../../components/shared/BlogCard.vue';
 
-const router = useRouter();
+const API_BASE = 'http://localhost:8900';
+
 const userPosts = ref([]);
 const currentSlide = ref(0);
 const layout = ref('carousel');
 const isGrid = ref(false);
-const postsPerPage = 6;
+const postsPerPage = 3;
 const currentPage = ref(1);
 
 onMounted(async () => {
   try {
-    const rawUserId = localStorage.getItem('userId');
-
-    if (!rawUserId) {
-      router.push({ name: 'loginView' });
-      return;
-    }
-
-    const userId = Number(rawUserId);
     const posts = await getAllPosts();
 
-    if (posts && Array.isArray(posts)) {
-      userPosts.value = posts.filter(post => post.userId === userId);
+    // transform each post.image into a full URL
+    if (Array.isArray(posts)) {
+      userPosts.value = posts.map(post => {
+        const img = post.image || '';
+        const fullUrl = img.startsWith('http')
+          ? img
+          : `${API_BASE}${img.startsWith('/') ? '' : '/'}${img}`;
+        return { ...post, image: fullUrl };
+      });
     } else {
       console.error('Unexpected response structure:', posts);
     }
@@ -144,5 +143,4 @@ function loadMore() {
 </script>
 
 <style scoped>
-/* Optional custom styles */
 </style>

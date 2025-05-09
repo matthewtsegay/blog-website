@@ -1,22 +1,29 @@
-<template>
-  <form @submit.prevent="onSubmit" class="space-y-2">
-    <FormTextarea v-model="comment" label="Write a comment..." />
-    <FormButton :text="'Post Comment'" variant="primary" />
-  </form>
-</template>
-
 <script setup>
 import { ref } from 'vue'
-import FormTextarea from './FormTextarea.vue'
-import FormButton from './FormButton.vue'
+import FormTextarea from '../shared/FormTextarea.vue'
+import FormButton from '../shared/FormButton.vue' // Assuming you're using a custom button
 
 const emit = defineEmits(['submit'])
+const content = ref('')
 
-const comment = ref('')
+function handleSubmit() {
+  if (!content.value.trim()) {
+    alert('Comment cannot be empty.')
+    return
+  }
 
-function onSubmit() {
-  if (!comment.value.trim()) return
-  emit('submit', comment.value)
-  comment.value = ''
+  emit('submit', content.value.trim())
+  content.value = '' 
 }
 </script>
+
+<template>
+  <form @submit.prevent="handleSubmit" class="space-y-3">
+    <FormTextarea
+      v-model="content"
+      id="comment-content"
+      label="Write a comment..."
+    />
+    <FormButton text="Post Comment" @click="handleSubmit" />
+  </form>
+</template>

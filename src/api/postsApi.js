@@ -37,3 +37,5 @@ export const updataPost = async (postid,data) =>{
     const response = await api1.post(`/posts/${postid}`,data)
     return response.data
 }
+// src/api/postsApi.js
+

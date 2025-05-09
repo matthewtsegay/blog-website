@@ -71,10 +71,14 @@ const router=createRouter({
           path:'/ResetPassword',
           name:'ResetPassword',
           component:()=>import('../views/auth/ResetPassword.vue'),
+        },
+        {
+          path:'/bloglist',
+          name:'bloglist',
+          component:()=>import('../views/Blogpost/bloglist.vue')
         }
     ]
 })
-export default router;
 
 router.beforeEach((to) => {
     const authStore = useAuthStore()
@@ -91,4 +95,5 @@ router.beforeEach((to) => {
   
     return true
   })
-  
+
+  export default router;

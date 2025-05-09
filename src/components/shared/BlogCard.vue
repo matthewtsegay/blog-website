@@ -1,9 +1,18 @@
 <template>
   <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out m-4">
-    <img v-if="post.image" :src="post.image" class="w-full h-52 object-cover rounded-t-2xl" />
+    <!-- Render image directly if available -->
+    <img
+  
+      :src="post.imageUrl"
+      :alt="post.title"
+      class="w-full h-52 object-cover rounded-t-2xl"
+    />
+
     <div class="p-6">
       <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ post.title }}</h2>
-      <p class="text-sm text-gray-500 mb-4">Category: <span class="font-semibold">{{ post.category }}</span></p>
+      <p class="text-sm text-gray-500 mb-2">
+        Category: <span class="font-semibold">{{ post.category }}</span>
+      </p>
       <p class="text-gray-600 mb-4">{{ post.content }}</p>
 
       <LikeDislikeButton
@@ -14,71 +23,119 @@
         @dislike="handleDislike"
       />
 
-      <div class="flex justify-between items-center mt-4">
-        <router-link :to="`/edit/${post.id}`" class="text-blue-600 hover:underline text-sm">Edit</router-link>
-        <button @click="deletePost" class="text-red-500 hover:text-red-600 text-sm">Delete</button>
+      <div>
+        <button
+          @click="toggleComment"
+          class="flex items-center text-blue-500 hover:text-blue-700 text-sm mt-4"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 8h2a2 2 0 012 2v10l-4-4H7a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+          </svg>
+          {{ showCommentField ? 'Hide Comments' : 'Comment' }}
+        </button>
+
+        <div v-if="showCommentField" class="mt-4">
+          <CommentForm @submit="onAddComment" />
+          <div v-for="comment in comments" :key="comment.id" class="mt-2">
+            <Comment :comment="comment" />
+          </div>
+        </div>
       </div>
-
-      <hr class="my-4" />
-
-      <div v-for="comment in comments" :key="comment.id">
-        <Comment :comment="comment" />
-      </div>
-
-      <CommentForm @submit="addComment" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import LikeDislikeButton from './LikeDislikeButtons.vue';
-import Comment from './Comment.vue';
-import CommentForm from './CommentForm.vue';
+import { ref, onMounted } from 'vue'
+import LikeDislikeButton from './LikeDislikeButtons.vue'
+import Comment from './Comment.vue'
+import CommentForm from './CommentForm.vue'
+import { likedislikeGet, likedislikePost } from '../../api/likeDislikeApi.js'
+import { getComments, addComment } from '../../api/commentApi.js'
 
-const props = defineProps({ post: Object });
-const emit = defineEmits(['remove']);
+// props
+const props = defineProps({
+  post: { type: Object, required: true }
+})
 
-const likes = ref(props.post.likes || 0);
-const dislikes = ref(props.post.dislikes || 0);
-const userReaction = ref(null);
-const comments = ref(props.post.comments || []);
+// state
+const likes = ref(0)
+const dislikes = ref(0)
+const userReaction = ref(null)
+const comments = ref([])
+const showCommentField = ref(false)
 
-console.log("Rendering BlogCard for:", props.post); // Debug
+const imageUrl = ref(props.post.image)
 
-function handleLike(action) {
-  if (action === 'add') {
-    likes.value++;
-    if (userReaction.value === 'dislike') dislikes.value--;
-    userReaction.value = 'like';
-  } else {
-    likes.value--;
-    userReaction.value = null;
+onMounted(async () => {
+  await loadReactions()
+  await loadComments()
+})
+
+async function loadReactions() {
+  try {
+    const { likes: l = 0, dislikes: d = 0, userReaction: ur = null } = await likedislikeGet(props.post.id)
+    likes.value = l
+    dislikes.value = d
+    userReaction.value = ur
+  } catch (e) {
+    console.error('Failed to load reactions', e)
   }
 }
 
-function handleDislike(action) {
-  if (action === 'add') {
-    dislikes.value++;
-    if (userReaction.value === 'like') likes.value--;
-    userReaction.value = 'dislike';
-  } else {
-    dislikes.value--;
-    userReaction.value = null;
+async function loadComments() {
+  try {
+    const data = await getComments(props.post.id)
+    comments.value = Array.isArray(data) ? data : []
+  } catch (e) {
+    console.error('Failed to load comments', e)
   }
 }
 
-function addComment(content) {
-  const newComment = {
-    id: Date.now(),
-    content,
-    user: "CurrentUser",
-    created_at: new Date(),
-  };
-  comments.value.unshift(newComment);
+function toggleComment() {
+  showCommentField.value = !showCommentField.value
 }
 
-function deletePost() {
-  emit('remove', props.post.id);
+async function onAddComment(content) {
+  const stored = localStorage.getItem('user')
+  if (!stored) return alert('Please log in first to comment.')
+  let user
+  try {
+    user = JSON.parse(stored)
+  } catch {
+    return alert('Invalid user session')
+  }
+  try {
+    const newC = await addComment({ postId: props.post.id, userId: user.id, content })
+    comments.value.unshift(newC)
+  } catch (e) {
+    console.error(e)
+    alert('Failed to add comment.')
+  }
+}
+
+async function handleLike() {
+  await react('like')
+}
+async function handleDislike() {
+  await react('dislike')
+}
+async function react(type) {
+  const stored = localStorage.getItem('user')
+  if (!stored) return alert(`Please log in first to ${type} the post.`)
+  const user = JSON.parse(stored)
+  const newReaction = userReaction.value === type ? null : type
+  try {
+    const res = await likedislikePost({ postId: props.post.id, userId: user.id, reaction: newReaction })
+    likes.value = res.likes
+    dislikes.value = res.dislikes
+    userReaction.value = res.userReaction
+  } catch (e) {
+    console.error(`Error posting ${type}`, e)
+  }
 }
 </script>
+
+<style scoped>
+</style>

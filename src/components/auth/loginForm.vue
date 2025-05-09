@@ -88,24 +88,25 @@ const handlesubmit = async () => {
   loading.value = true
   error.value = ''
   try {
-    // 1) Call login() 
+    // 1. Send login request
     const res = await login(credentials.value)
 
-    // 2) Normalize: if this was an Axios response, use res.data; otherwise use res itself
+    // 2. Get user data (support for both direct object or axios response)
     const user = res.data ?? res
 
-    // 3) Now user.id or user.userId should be defined
-    //    Use whichever field your backend actually returns:
+    // 3. Check if user has an ID (backend must return it)
     const idToStore = user.id || user.userId
     if (!idToStore) {
       throw new Error('No user ID in login response')
     }
 
-    // 4) Store into localStorage
-    localStorage.setItem('userId', idToStore)
+    // 4. Store full user object as JSON
+    localStorage.setItem('user', JSON.stringify(user))  // ✅ IMPORTANT CHANGE
 
-    // 5) Update your store and redirect
+    // 5. Update pinia or vuex store
     authStore.set(user)
+
+    // 6. Redirect to Post Dashboard
     router.push({ name: 'PostDashBoard' })
   } catch (err) {
     error.value = err.response?.data?.message || err.message || 'Login failed. Please try again.'
@@ -114,14 +115,6 @@ const handlesubmit = async () => {
   }
 }
 
-
 const goToSignup = () => router.push({ name: 'signupView' })
 const goToForgotPassword = () => router.push({ name: 'ForgetPassword' })
 </script>
-
-<style scoped>
-.login-page {
-  font-family: 'Inter', sans-serif;
-  background-color: #f9fafb;
-}
-</style>

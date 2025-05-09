@@ -1,23 +1,23 @@
+<!-- src/components/FormButton.vue -->
 <template>
   <button
     :type="type"
     :class="['w-full', 'py-2', 'rounded-lg', 'transition', buttonClasses]"
     @click="handleClick"
   >
-    <slot></slot>
+    <slot>Submit</slot>
   </button>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 
-// Props
+
 const props = defineProps({
-  type: { type: String, default: 'button' }, // Default is "button", can be "submit"
-  variant: { type: String, default: 'primary' }, // Can be "primary", "secondary", etc.
+  type: { type: String, default: 'button' }, 
+  variant: { type: String, default: 'primary' },
 });
 
-// Classes based on button variant
 const buttonClasses = computed(() => {
   switch (props.variant) {
     case 'primary':
@@ -31,13 +31,11 @@ const buttonClasses = computed(() => {
   }
 });
 
+
 function handleClick(event) {
-  // You can handle any logic when the button is clicked
-  // For example, emitting events or logging something
   console.log('Button clicked!');
 }
 </script>
 
 <style scoped>
-/* Optional: Additional button styles */
 </style>
