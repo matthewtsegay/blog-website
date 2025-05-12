@@ -10,38 +10,34 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const previewUrl = ref('')
-const imageName = ref('') // To store the image name
-const imageUrl = ref('') // To store the uploaded image URL from the backend
+const imageName = ref('')
+const imageUrl = ref('') 
 const isDragging = ref(false)
 
-// Watch for changes to modelValue and update preview and name
+
 watch(() => props.modelValue, (newFile) => {
   if (newFile) {
     previewUrl.value = URL.createObjectURL(newFile)
-    imageName.value = newFile.name // Set the image name when a new file is selected
+    imageName.value = newFile.name
   }
 })
 
-// Handle file selection
 const handleFile = (file) => {
   if (file && file.type.startsWith('image/')) {
     emit('update:modelValue', file)
     
-    // Upload the image to the backend
     const formData = new FormData()
     formData.append('image', file)
 
-    // Replace 'YOUR_API_URL_HERE' with your actual API URL
-    fetch('http://192.168.100.222:8700/api/blog/posts/create', {
-      method: 'POST',
-      body: formData,
+    fetch('http://192.168.100.222:8900/api/users/signup', {
+          method: 'POST',
+          body: formData,
     })
       .then(response => response.json())
       .then(data => {
         if (data.url) {
-          imageUrl.value = data.url // Save the returned image URL from the backend
+          imageUrl.value = data.url 
           console.log('Image URL:', imageUrl.value)
-          // Optionally store the image URL in a global state or database
           saveImageUrlToBackend(imageUrl.value)
         } else {
           console.error('Image upload failed:', data.message)
@@ -53,21 +49,16 @@ const handleFile = (file) => {
   }
 }
 
-// Function to save the image URL after upload (could be to a local state or backend)
 const saveImageUrlToBackend = (url) => {
-  // Here you could store it in your backend or global state
-  // For example, using localStorage or saving to a database
   localStorage.setItem('imageUrl', url)
   console.log('Image URL saved to localStorage:', url)
 }
 
-// Handle input change
 const handleFileChange = (event) => {
   const file = event.target.files[0]
   handleFile(file)
 }
 
-// Drag-and-drop events
 const onDrop = (e) => {
   e.preventDefault()
   isDragging.value = false
@@ -89,12 +80,10 @@ const onDragLeave = () => {
 <template>
   <div class="w-full flex justify-center items-center mb-6">
     <div class="w-full sm:w-80 flex flex-col items-center">
-      <!-- Label -->
       <label :for="id" class="block text-sm font-bold text-gray-700 mb-2">
         {{ label }}
       </label>
 
-      <!-- Show image if it's uploaded, otherwise show upload form -->
       <div v-if="!previewUrl" 
            class="border-2 border-dashed rounded-lg w-full h-40 flex flex-col items-center justify-center cursor-pointer transition-all"
            :class="{
@@ -113,17 +102,13 @@ const onDragLeave = () => {
         <label :for="id" class="text-blue-600 hover:underline text-sm cursor-pointer">or browse files</label>
       </div>
 
-      <!-- Show selected image -->
       <div v-if="previewUrl" class="mt-4 w-full flex justify-center">
         <img :src="previewUrl" alt="Selected Image" class="h-32 w-32 object-cover rounded-full border-2 border-gray-300" />
       </div>
 
-      <!-- Show image name -->
       <div v-if="imageName" class="mt-2 text-sm text-gray-600">
           {{ imageName }}
       </div>
-
-      <!-- Show uploaded image URL if available -->
       <div v-if="imageUrl" class="mt-2 text-sm text-gray-600">
         Image URL: {{ imageUrl }}
       </div>
@@ -132,7 +117,6 @@ const onDragLeave = () => {
 </template>
 
 <style scoped>
-/* Hide the file input when the image is selected */
 input[type="file"] {
   display: none;
 }

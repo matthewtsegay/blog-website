@@ -1,16 +1,17 @@
 <template>
-  <nav :class="[!authStore.isAuthenticated ? 'bg-black' : 'bg-transparent', 'shadow-md px-6 py-6 flex items-center justify-between relative w-full z-50']">
+  <nav :class="[!isAuthenticated ? 'bg-black' : 'bg-gray-500', 'shadow-md px-6 py-6 flex items-center justify-between relative w-full z-50']">
     <div class="flex items-center">
       <router-link to="/" class="text-2xl font-bold text-gray-100">
         {{ badge }}
       </router-link>
     </div>
 
-    <div v-if="authStore.isAuthenticated" class="absolute left-1/2 transform -translate-x-1/2">
+    <!-- Blog Dropdown (Visible when logged in) -->
+    <div v-if="isAuthenticated" class="absolute left-1/2 transform -translate-x-1/2">
       <div class="relative" ref="dropdownRef">
         <button
           @click="toggleDropdown"
-          class="text-xl font-bold text-blue-600 hover:text-blue-800 focus:outline-none"
+          class="text-xl font-bold text-white hover:text-gray-200 focus:outline-none"
         >
           Blog ▼
         </button>
@@ -45,132 +46,120 @@
       </div>
     </div>
 
-    <div class="flex items-center space-x-4">
-      <template v-if="!authStore.isAuthenticated">
-        <!-- User Dropdown -->
-        <div class="relative" ref="userDropdownRef">
-          <button
-            @click="toggleUserDropdown"
-            class="font-bold text-blue-600 hover:text-blue-800"
-          >
-            User ▼
-          </button>
-          <div
-            v-if="userDropdown"
-            class="absolute right-0 mt-2 w-40 bg-white border border-blue-200 shadow-md rounded-md py-2 z-[999]"
-          >
-            <router-link
-              to="/loginView"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
-              @click="closeUserDropdown"
-            >
-              Login
-            </router-link>
-            <div class="border-t border-blue-100"></div>
-            <router-link
-              to="/signupView"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
-              @click="closeUserDropdown"
-            >
-              Sign Up
-            </router-link>
-          </div>
-        </div>
-      </template>
-
-      <template v-else>
-        <div class="relative text-center" ref="profileDropdownRef">
-          <img
-            @click="toggleProfileDropdown"
-            src="../../assets/image/image2.jpg"
-            alt="Profile"
-            class="w-10 h-10 rounded-full border-2 border-blue-400 shadow-sm object-cover cursor-pointer"
-          />
-          <p class="text-sm font-bold text-gray-700 mt-1">
-            {{ authStore.user.name }}
-          </p>
-          <div
-            v-if="profileDropdown"
-            class="absolute right-0 mt-2 w-44 bg-white border border-blue-200 shadow-md rounded-md py-2 z-[999]"
-          >
-            <router-link
-              to="/profileView"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
-              @click="closeProfileDropdown"
-            >
-              Profile
-            </router-link>
-            <div class="border-t border-blue-100"></div>
-            <button
-              @click="logout"
-              class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-blue-100"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </template>
+    <!-- Login and Sign Up (Visible when not logged in) -->
+    <div v-if="!isAuthenticated" class="flex items-center space-x-4">
+      <router-link
+        to="/loginView"
+        class="text-sm font-bold text-white hover:text-gray-200 px-4 py-2"
+      >
+        Login
+      </router-link>
+      <router-link
+        to="/signupView"
+        class="text-sm font-bold text-white hover:text-gray-200 px-4 py-2"
+      >
+        Sign Up
+      </router-link>
     </div>
+
+    <!-- Profile Dropdown (Visible when logged in) -->
+    <template v-if="isAuthenticated">
+      <div class="relative text-center" ref="profileDropdownRef">
+        <img
+          @click="toggleProfileDropdown"
+          :src="userProfileImage"
+          alt="Profile"
+          class="w-10 h-10 rounded-full border-2 border-blue-400 shadow-sm object-cover cursor-pointer"
+        />
+        <p class="text-sm font-bold text-gray-700 mt-1">
+          {{ user?.name }}
+        </p>
+        <div
+          v-if="profileDropdown"
+          class="absolute right-0 mt-2 w-44 bg-white border border-blue-200 shadow-md rounded-md py-2 z-[999]"
+        >
+          <router-link
+            to="/profileView"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
+            @click="closeProfileDropdown"
+          >
+            Profile
+          </router-link>
+          <div class="border-t border-blue-100"></div>
+          <button
+            @click="logout"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </template>
   </nav>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useAuthStore } from '../../store/auth'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios' // Import axios for making API calls
 
-const authStore = useAuthStore()
-const router = useRouter()
-const badge = ref('Blog website')
-
+const isAuthenticated = ref(false) // Store authentication state
 const dropdownOpen = ref(false)
 const profileDropdown = ref(false)
-const userDropdown = ref(false)
+const userProfileImage = ref('') // Store the user's profile image URL
+const user = ref({}) // Store user info (including name)
+const badge = ref('Blog website')
+const router = useRouter()
 
-const dropdownRef = ref(null)
-const profileDropdownRef = ref(null)
-const userDropdownRef = ref(null)
-
-function toggleDropdown() {
-  dropdownOpen.value = !dropdownOpen.value
-}
-function closeDropdown() {
-  dropdownOpen.value = false
-}
-function toggleProfileDropdown() {
-  profileDropdown.value = !profileDropdown.value
-}
-function closeProfileDropdown() {
-  profileDropdown.value = false
-}
-function toggleUserDropdown() {
-  userDropdown.value = !userDropdown.value
-}
-function closeUserDropdown() {
-  userDropdown.value = false
-}
-function logout() {
-  authStore.logout()
-  closeProfileDropdown()
-  closeDropdown()
-  router.push('/loginView')
-}
-function handleClickOutside(event) {
-  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
-    dropdownOpen.value = false
-  }
-  if (profileDropdownRef.value && !profileDropdownRef.value.contains(event.target)) {
-    profileDropdown.value = false
-  }
-  if (userDropdownRef.value && !userDropdownRef.value.contains(event.target)) {
-    userDropdown.value = false
+const getUserProfile = async () => {
+  try {
+    // Assuming the user is authenticated, make an API request to fetch user profile data
+    const response = await axios.get('/api/user/profile', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`, // Pass the token if necessary
+      }
+    })
+    
+    // Update the user and profile image based on the response
+    user.value = response.data
+    userProfileImage.value = user.value.profileImage || '/default-profile.jpg' // Default image if no profile image
+  } catch (error) {
+    console.error('Error fetching user profile:', error)
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
+  const storedUser = localStorage.getItem('user')
+  if (storedUser) {
+    isAuthenticated.value = true
+    getUserProfile() 
+  }
 })
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+
+const toggleDropdown = () => {
+  dropdownOpen.value = !dropdownOpen.value
+}
+
+const toggleProfileDropdown = () => {
+  profileDropdown.value = !profileDropdown.value
+}
+
+const closeDropdown = () => {
+  dropdownOpen.value = false
+}
+
+const closeProfileDropdown = () => {
+  profileDropdown.value = false
+}
+
+const logout = () => {
+  localStorage.removeItem('user')
+  localStorage.removeItem('token') 
+  isAuthenticated.value = false
+  user.value = {}
+  userProfileImage.value = ''
+  router.push('/loginView') 
+}
 </script>
+
+<style scoped></style>

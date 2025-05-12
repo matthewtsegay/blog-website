@@ -1,5 +1,6 @@
 <template>
   <navbar />
+
   <div class="p-4 mb-100">
     <div class="bg-gray-100 px-4 py-2 sm:px-6 rounded-xl mb-6 shadow">
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
@@ -49,7 +50,7 @@
             <td class="py-3 px-4 bg-gray-100 font-medium">{{ post.title }}</td>
             <td class="py-3 px-4 bg-gray-200 text-gray-800 truncate max-w-xs">{{ post.content }}</td>
             <td class="py-3 px-4 bg-gray-100 text-gray-800">{{ formatDate(post.created_at) }}</td>
-            <td class="py-3 px-4 bg-gray-200 text-gray-800">{{ post.catagory }}</td>
+            <td class="py-3 px-4 bg-gray-200 text-gray-800">{{ post.category }}</td>
             <td class="py-3 px-4 bg-gray-100 space-x-2">
               <button
                 @click="editPost(post.id)"
@@ -69,6 +70,7 @@
       </table>
     </div>
   </div>
+
   <footer1 />
 </template>
 
@@ -101,6 +103,7 @@ const editPost = (id) => {
   const postToEdit = posts.value.find(post => post.id === id)
   if (postToEdit) {
     localStorage.setItem('editPost', JSON.stringify(postToEdit))
+    localStorage.setItem('editPostId', postToEdit.id)
     router.push({ name: 'EditPost', params: { id } })
   }
 }

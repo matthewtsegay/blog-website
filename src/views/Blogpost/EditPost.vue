@@ -6,7 +6,6 @@
       <h1 class="text-2xl font-semibold mb-6 text-center">Edit Post</h1>
 
       <form @submit.prevent="handleUpdatePost" class="space-y-6">
-        
         <!-- Image display (click to show upload form) -->
         <div v-if="imagePath" class="flex justify-center">
           <img
@@ -70,10 +69,9 @@ import navbar from '../../components/shared/navbar.vue';
 import footer1 from '../../components/shared/footer1.vue';
 
 const router = useRouter();
-const postId = localStorage.getItem('createdPostId');
+const postId = localStorage.getItem('editPostId');
 const userId = localStorage.getItem('userId');
 
-// Initialize post and image path
 const post = ref({
   title: '',
   content: '',
@@ -82,20 +80,10 @@ const post = ref({
   tags: ''
 });
 
-const imagePath = ref(localStorage.getItem('imagePath') || null);
-
-// Toggle for image upload form visibility
+const imagePath = ref(null);
 const isUploadVisible = ref(false);
 
-// Image change handler
-const handleImageUpload = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    post.value.image = file;
-  }
-};
-
-// Fetch and load post data
+// Fetch the post to be edited
 const loadPost = async () => {
   try {
     const data = await getPost(postId);
@@ -103,49 +91,51 @@ const loadPost = async () => {
       title: data.title,
       content: data.content,
       category: data.category,
-      tags: data.tags.join(', '),
+      tags: data.tags ? data.tags.join(', ') : '',
       image: null
     };
-    imagePath.value = data.imagePath;
-    localStorage.setItem('imagePath', data.imagePath); // Save image path in localStorage
+    imagePath.value = data.imagePath || '';
   } catch (error) {
-    console.error('Error loading post:', error);
+    console.error('Failed to load post:', error);
   }
 };
 
-// Handle post update
+// Handle form submission and post update
 const handleUpdatePost = async () => {
   if (!userId) {
-    console.error("User ID is missing");
+    alert("User not authenticated.");
     return;
   }
 
   try {
     const formData = new FormData();
-    formData.append('postId', postId);
-    formData.append('userId', userId);
     formData.append('title', post.value.title);
     formData.append('content', post.value.content);
     formData.append('category', post.value.category);
-    formData.append('tags', post.value.tags);
+    formData.append('tags', post.value.tags); // assuming comma-separated tags
+    formData.append('userId', userId);
+
     if (post.value.image) {
       formData.append('image', post.value.image);
     }
 
     await updatePost(postId, formData);
 
-    // If a new image was uploaded, update localStorage with the new path
-    if (post.value.image) {
-      const updated = await getPost(postId);
-      imagePath.value = updated.imagePath;
-      localStorage.setItem('imagePath', updated.imagePath);
-    }
+    // Clear stored values
+    localStorage.removeItem('editPostId');
+    localStorage.removeItem('editPost');
+    localStorage.removeItem('imagePath');
 
-    router.push('/PostDashBoard');
+    // Redirect to dashboard
+    router.push({ name: 'PostDashBoard' });
+
   } catch (error) {
     console.error('Error updating post:', error);
+    alert('Failed to update post. Please try again.');
   }
 };
 
-onMounted(loadPost);
+onMounted(() => {
+  loadPost();
+});
 </script>

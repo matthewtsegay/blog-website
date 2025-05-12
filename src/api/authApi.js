@@ -1,4 +1,5 @@
 import api from "../services/apiServices.js"
+import api3 from "../services/loginApi.js"
 
 
 export const signup = async (data) => {
@@ -6,7 +7,7 @@ export const signup = async (data) => {
     return response.data
   }
 export const login = async (data) => {
-    const response = await api.post('/login', data)
+    const response = await api3.post('/login', data)
     return response.data
   }
 export const deleteuser = async (id) => {
@@ -14,11 +15,11 @@ export const deleteuser = async (id) => {
     return response.data
   }
 export const ForgotPassword = async (data) => {
-   const response = await api.post('/forgot-password',data)
+   const response = await api3.post('/forgot-password',data)
    return response.data
 }
 export const resetPassword = async (data) => {
-  const response = await api.put(`/reset-password`,data)
+  const response = await api3.put(`/reset-password`,data)
   return response.data
 }
 export const updateProfile = async (id,userdata) => {
@@ -30,10 +31,10 @@ export const getProfile = async (id) =>{
   return response.data
 }
 export const VerifyCode = async (data) =>{
-  const response = await api.post('/verify-reset-code',data)
+  const response = await api3.post('/verify-reset-code',data)
   return response.data
 }
 export const ResetPassword = async (data) =>{
-  const response = await api.put ('/reset-password',data)
+  const response = await api3.put ('/reset-password',data)
   return response.data
 }

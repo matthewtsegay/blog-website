@@ -14,6 +14,7 @@
         </p>
       </div>
     </div>
+
     <div class="w-full md:w-1/3 flex items-center justify-center bg-gray-100 rounded-md bg-opacity-90 p-6">
       <form
         @submit.prevent="handlesubmit"
@@ -58,7 +59,7 @@
             placeholder="first name"
             type="text"
             id="firstname"
-            autocomplete="firstName"
+            autocomplete="given-name"
             required
           />
           <FormInput
@@ -67,7 +68,7 @@
             placeholder="last name"
             type="text"
             id="lastname"
-            autocomplete="lastName"
+            autocomplete="family-name"
             required
           />
           <FormInput
@@ -91,6 +92,14 @@
         </div>
 
         <div v-if="step === 3">
+          <div class="flex justify-center">
+            <FormImageUpload
+              v-model="user.image"
+              id="image"
+              label="Upload Image"
+              class="w-full"
+            />
+          </div>
           <div class="mb-4">
             <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
             <textarea
@@ -144,8 +153,9 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../../store/auth.js';
-import { signup } from '../../api/authApi.js';
+import { signup } from '../../api/authApi.js'; // Your API call
 import FormInput from '../shared/FormInput.vue';
+import FormImageUpload from '../shared/FormImageUpload.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -158,7 +168,8 @@ const user = ref({
   lastName: '',
   email: '',
   phoneNumber: '',
-  bio: ''
+  bio: '',
+  image: null,
 });
 
 const step = ref(1);
@@ -181,38 +192,34 @@ const nextStep = () => {
 
 const handlesubmit = async () => {
   try {
-    // 1) Call signup()
-    const res = await signup(user.value);
+    const formData = new FormData();
+    formData.append('username', user.value.username);
+    formData.append('password', user.value.password);
+    formData.append('confirmPassword', user.value.confirmpassword);
+    formData.append('firstName', user.value.firstName);
+    formData.append('lastName', user.value.lastName);
+    formData.append('email', user.value.email);
+    formData.append('phoneNumber', user.value.phoneNumber);
+    formData.append('bio', user.value.bio);
+    if (user.value.image) {
+      formData.append('image', user.value.image);
+    }
 
-    // 2) Normalize: use res.data if present, otherwise res itself
+    const res = await signup(formData);
     const createdUser = res.data ?? res;
-
-    // 3) Extract the ID (in case your backend uses `id` or `userId`)
     const idToStore = createdUser.id || createdUser.userId;
     if (!idToStore) {
       throw new Error('No user ID returned from signup');
     }
-
-    // 4) Store into localStorage
-    localStorage.setItem('userId', idToStore);
-    console.log('User ID saved successfully:', idToStore);
-
-    // 5) Update your Pinia store
+    localStorage.setItem('user', JSON.stringify(user.value));
+    
+    //localStorage.setItem('userId', idToStore);
     authStore.set(createdUser);
-
-    // 6) Navigate to login
     router.push({ name: 'loginView' });
+
   } catch (err) {
     console.error(err);
     error.value = err.response?.data?.message || err.message || 'Signup failed';
   }
 };
-
 </script>
-
-<style scoped>
-.signup-page {
-  font-family: 'Inter', sans-serif;
-  background-color: #f9fafb;
-}
-</style>

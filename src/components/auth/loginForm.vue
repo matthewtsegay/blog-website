@@ -102,6 +102,7 @@ const handlesubmit = async () => {
 
     // 4. Store full user object as JSON
     localStorage.setItem('user', JSON.stringify(user))  // ✅ IMPORTANT CHANGE
+    localStorage.setItem('userId', idToStore);
 
     // 5. Update pinia or vuex store
     authStore.set(user)

@@ -10,7 +10,10 @@
     </div>
 
     <div v-if="profile.profilePicture" class="mb-6 flex justify-center">
-      <img :src="profile.profilePicture" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover" />
+      <img
+       :src="profile.imageUrl"
+           alt="Profile Picture"
+           class="w-32 h-32 rounded-full object-cover" />
     </div>
 
     <table class="w-full border border-blue-300 rounded-lg overflow-hidden">
@@ -109,8 +112,13 @@ import { reactive, ref, onMounted } from 'vue'
 import { useAuthStore } from '../../store/auth.js'
 import { getProfile, updateProfile } from '../../api/authApi.js'
 
+const props = defineProps({
+  post: { type: Object, required: true }
+})
+
 const authStore = useAuthStore()
 const isEditing = ref(false)
+const imageUrl = ref(props.post.image)
 
 const profile = reactive({
   firstName: '',

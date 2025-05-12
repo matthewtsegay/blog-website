@@ -7,7 +7,7 @@
         localReaction === 'like' ? 'text-green-600 font-bold' : 'text-gray-600'
       ]"
     >
-      👍 {{ localLikes }}
+      👍 {{ likeCount }}
     </button>
 
     <button
@@ -17,58 +17,48 @@
         localReaction === 'dislike' ? 'text-red-600 font-bold' : 'text-gray-600'
       ]"
     >
-      👎 {{ localDislikes }}
+      👎 {{ dislikeCount }}
     </button>
   </div>
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue'
-
+import { ref, watch, computed } from 'vue'
 
 const props = defineProps({
-  likes: { type: Number, required: true },
-  dislikes: { type: Number, required: true },
+  // incoming userReaction: 'like', 'dislike', or null
   userReaction: { type: String, default: null },
 })
 
 const emit = defineEmits(['like', 'dislike'])
 
-const localLikes = ref(props.likes)
-const localDislikes = ref(props.dislikes)
+// Local copy of the reaction
 const localReaction = ref(props.userReaction)
 
-watchEffect(() => {
-  localLikes.value = props.likes
-  localDislikes.value = props.dislikes
-  localReaction.value = props.userReaction
-})
-
-function handleLikeClick() {
-  if (localReaction.value === 'like') {
-    localLikes.value += 1
-    localReaction.value = null
-  } else {
-    if (localReaction.value === 'dislike') {
-      localDislikes.value += 1
-    }
-    localLikes.value += 1
-    localReaction.value = 'like'
+// Keep localReaction in sync whenever parent prop changes
+watch(
+  () => props.userReaction,
+  (newVal) => {
+    localReaction.value = newVal
   }
+)
+
+// Computed counts: either 1 or 0
+const likeCount = computed(() => (localReaction.value === 'like' ? 1 : 0))
+const dislikeCount = computed(() => (localReaction.value === 'dislike' ? 1 : 0))
+
+// Toggle functions emit the new state but do not alter any backend logic
+function handleLikeClick() {
+  localReaction.value = localReaction.value === 'like' ? null : 'like'
   emit('like', localReaction.value)
 }
 
 function handleDislikeClick() {
-  if (localReaction.value === 'dislike') {
-    localDislikes.value += 1
-    localReaction.value = null
-  } else {
-    if (localReaction.value === 'like') {
-      localLikes.value += 1
-    }
-    localDislikes.value += 1
-    localReaction.value = 'dislike'
-  }
+  localReaction.value = localReaction.value === 'dislike' ? null : 'dislike'
   emit('dislike', localReaction.value)
 }
 </script>
+
+<style scoped>
+/* nothing extra needed */
+</style>
