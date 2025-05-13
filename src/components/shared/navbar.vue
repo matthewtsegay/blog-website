@@ -102,6 +102,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios' // Import axios for making API calls
+import ImageUpload from '../../components/shared/FormImageUpload.vue'
 
 const isAuthenticated = ref(false) // Store authentication state
 const dropdownOpen = ref(false)

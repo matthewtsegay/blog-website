@@ -112,8 +112,10 @@ const handleUpdatePost = async () => {
     formData.append('title', post.value.title);
     formData.append('content', post.value.content);
     formData.append('category', post.value.category);
-    formData.append('tags', post.value.tags); // assuming comma-separated tags
-    formData.append('userId', userId);
+    formData.append('tags', JSON.stringify(post.value.tags.split(',').map(tag => tag.trim())));
+ // assuming comma-separated tags
+    formData.append('user', userId);
+
 
     if (post.value.image) {
       formData.append('image', post.value.image);
@@ -129,10 +131,11 @@ const handleUpdatePost = async () => {
     // Redirect to dashboard
     router.push({ name: 'PostDashBoard' });
 
-  } catch (error) {
-    console.error('Error updating post:', error);
-    alert('Failed to update post. Please try again.');
-  }
+   } catch (error) {
+  const errorData = error.response?.data || error.message;
+  console.error('Error updating profile:', errorData);
+  alert('Failed to update profile: ' + JSON.stringify(errorData));
+}
 };
 
 onMounted(() => {
