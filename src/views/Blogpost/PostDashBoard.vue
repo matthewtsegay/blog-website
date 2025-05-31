@@ -24,7 +24,7 @@
           @click="createPost"
           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow w-full md:w-auto"
         >
-          Create Blog +
+        ✚Create Blog
         </button>
       </div>
     </div>
@@ -56,13 +56,13 @@
                 @click="editPost(post.id)"
                 class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
               >
-                Edit
+              🖉 Edit
               </button>
               <button
                 @click="deletePostById(post.id)"
                 class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
               >
-                Delete
+              🗑️ Delete
               </button>
             </td>
           </tr>

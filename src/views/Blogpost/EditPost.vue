@@ -15,8 +15,6 @@
             @click="isUploadVisible = true" 
           />
         </div>
-
-        <!-- Upload form (shown only when isUploadVisible is true) -->
         <div v-if="isUploadVisible" class="flex justify-center">
           <FormImageUpload
             v-model="post.image"
@@ -25,8 +23,6 @@
             class="w-full"
           />
         </div>
-
-        <!-- Title -->
         <div>
           <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
           <input v-model="post.title" type="text" id="title" required class="w-full border rounded p-2" />
@@ -121,12 +117,10 @@ const handleUpdatePost = async () => {
 
     await updatePost(postId, formData);
 
-    // Clear stored values
     localStorage.removeItem('editPostId');
     localStorage.removeItem('editPost');
     localStorage.removeItem('imagePath');
 
-    // Redirect to dashboard
     router.push({ name: 'PostDashBoard' });
 
   } catch (error) {

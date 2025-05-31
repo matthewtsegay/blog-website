@@ -6,7 +6,7 @@ const authStore = useAuthStore()
 <template>
     <div id="app">
     <nav v-if="authStore.isAuthenticated">
-      <router-link :to="{ name: 'profileView' }">Profile</router-link> |
+      <router-link :to="{ name: 'postDashboard' }">Profile</router-link> |
       <button @click="authStore.logout">Logout</button>
     </nav>
     <router-view />

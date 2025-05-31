@@ -16,7 +16,6 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = data.token
   }
 
-  // Update user profile
   const updateProfile = async (profileData) => {
     if (!token.value) throw new Error('Not authenticated')
 
