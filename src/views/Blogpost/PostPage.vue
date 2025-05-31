@@ -38,7 +38,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { getPostById } from '../../services/apiServices.js'
+import { getPostById } from '../../api/postsApi.js'
 import LikeDislikeButton from '../../components/shared/LikeDislikeButtons.vue'
 
 const route = useRoute()
