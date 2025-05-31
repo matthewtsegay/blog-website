@@ -51,7 +51,7 @@
   <script setup>
   import { ref, onMounted, computed } from 'vue';
   import { useRouter } from 'vue-router';
-  import { getAllPosts1 as getAllPosts, deletePost1 as deletePost } from '../../api/postsApi.js';
+  import { getAllPosts,deletePost } from '../../api/postsApi.js';
   import blogpost from '../../components/blog/blogpost.vue';
   
   const router = useRouter();
