@@ -45,12 +45,6 @@ const router=createRouter({
           //meta:{requireAuth:true}
         },
         {
-          path:'/postPage/:id',
-          name:'postPage',
-          component:() => import('../views/Blogpost/PostPage.vue'),
-          //meta:{requireAuth:true}
-        },
-        {
           path:'/PostDashBoard',
           name:'PostDashBoard',
           component:()=>import('../views/Blogpost/PostDashBoard.vue'),
