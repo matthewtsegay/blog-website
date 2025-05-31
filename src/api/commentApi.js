@@ -5,10 +5,6 @@ export const getComments = async (postId) => {
   const response = await api2.get(`comments/post/${postId}`);
   return response.data;
 };
-//export const addComment = async (data) => {
- // const response = await api2.post('comments/add',data);
-//  return response.data;
-//};
 export const addComment = async (payload) => {
   try {
     const response = await api2.post('comments/add', payload)

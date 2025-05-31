@@ -25,10 +25,7 @@ export const deletePost = async (id) =>{
     const response = await api1.delete(`/posts/${id}`)
     return response.data
 }
-//export const upload_image = async (id,image) => {
-//  const response = await api1.post(`/upload-profile`,image)
-//  return response.data
-//}
+
 export const getPost = async (postid) => {
     const response = await api1.get(`/posts/${postid}`)
     return response.data
