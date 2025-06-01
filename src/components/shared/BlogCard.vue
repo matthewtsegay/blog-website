@@ -51,7 +51,7 @@ import { ref, onMounted } from 'vue'
 import LikeDislikeButton from './LikeDislikeButtons.vue'
 import Comment from './Comment.vue'
 import CommentForm from './CommentForm.vue'
-import { likedislikeGet, likedislikePost } from '../../api/likeDislikeApi.js'
+import { likedislikeGet, likedislikePost } from '../../api/LikeDislikeApi.js'
 import { getComments, addComment } from '../../api/commentApi.js'
 
 // props
