@@ -63,7 +63,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { ForgotPassword } from '../../api/authApi.JS'
+import { ForgotPassword } from '../../api/authApi.js'
 import { useRouter } from 'vue-router'
 import navbar from '../../components/shared/navbar.vue'
 import footer1 from '../../components/shared/footer1.vue'
