@@ -35,7 +35,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import navbar from '../../components/shared/navbar.vue'
 import footer1 from '../../components/shared/footer1.vue'
-import { VerifyCode } from '../../api/authApi.JS'
+import { VerifyCode } from '../../api/authApi.js'
 
 const router = useRouter()
 const code = ref(['', '', '', '', '', ''])

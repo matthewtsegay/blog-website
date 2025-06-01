@@ -44,7 +44,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ResetPassword } from '../../api/authApi.JS'
+import { ResetPassword } from '../../api/authApi.js'
 import navbar from '../../components/shared/navbar.vue'
 import footer1 from '../../components/shared/footer1.vue'
 
